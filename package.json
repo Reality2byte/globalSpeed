@@ -44,7 +44,7 @@
   },
   "dependencies": {
     "@types/audioworklet": "^0.0.55",
-    "@types/lodash": "^4.17.4",
+    "@types/lodash": "^4.17.13",
     "@types/lodash.debounce": "^4.0.9",
     "@types/node": "^20.12.12",
     "clsx": "^2.1.1",
