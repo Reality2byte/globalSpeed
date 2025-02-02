@@ -24,6 +24,7 @@ export type Gsm = {
     create: string,
     reset: string,
     duplicate: string,
+    delete: string,
     pinTooltip: string,
     mergeBoth: string,
     min: string,
@@ -60,14 +61,19 @@ export type Gsm = {
     implode: string,
     rotate: string,
     rows: string,
-    copy: string,
-    paste: string,
     replaceWith: string,
     invalidNumber: string,
     openPage: string,
     seconds: string,
     percent: string,
-    frames: string
+    frames: string,
+    more: string,
+    assign: string,
+    none: string,
+    edit: string,
+    customize: string,
+    allowShortcuts: string,
+    allowOn: string
   },
   placer: {
     windowBounds: {
@@ -151,13 +157,12 @@ export type Gsm = {
     toggleSpeed: string,
     toggleSpeedTooltip: string,
     alwaysOn: string,
-    alwaysOnTooltip: string
+    alwaysOnTooltip: string,
+    muteTab: string
   },
   options: {
     flags: {
       header: string,
-      _qrCodeCompact?: boolean,
-      _qrCodeBottomSize?: number,
       qrCodeTop: string,
       qrCodeBottom: string,
       language: string,
@@ -197,8 +202,6 @@ export type Gsm = {
         movementMobile: string,
         movementDesktop: string,
         headerTooltip: string,
-        showIcon: string,
-        showIconTooltip: string,
         autoHide: string,
         fullscreenOnly: string,
         fullscreenOnlyTooltip: string,
@@ -247,6 +250,10 @@ export type Gsm = {
     },
     rules: {
       header: string,
+      setTitleConditions: string,
+      clearTitleConditions: string,
+      titleConditionsLabel: string,
+      titleConditionsTooltip: string,
       conditions: string,
       startsWith: string,
       contains: string,
@@ -263,7 +270,12 @@ export type Gsm = {
       issueDirective: string,
       export: string,
       import: string,
-      areYouSure: string
+      areYouSure: string,
+      copy: string,
+      copied: string,
+      paste: string,
+      exportTooltip: string,
+      importTooltip: string
     }
   },
   pageDraw: {

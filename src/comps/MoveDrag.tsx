@@ -78,8 +78,8 @@ export function MoveDrag(props: MoveDragProps) {
   }
 
   return (
-  <button onPointerDown={handlePointerDown} className="icon MoveDrag">
+    <button onPointerDown={handlePointerDown} className="MoveDrag icon">
         <VscGripper size="1.42rem"/>
-  </button>
+    </button>
 )
 }

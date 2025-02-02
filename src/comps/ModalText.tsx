@@ -1,8 +1,8 @@
 import { useState } from "react"
 import { ThrottledTextInput } from "./ThrottledTextInput"
 import { ModalBase } from "./ModalBase"
+import { GearIcon } from "./GearIcon"
 import "./ModalText.css"
-import { Gear } from "./svgs"
 
 type ModalTextProps = {
   value: string,
@@ -23,9 +23,7 @@ export function ModalText(props: ModalTextProps) {
         }}/>
       </ModalBase>
     ) : (
-      <button className="icon gear interactive" onClick={e => setModal(!modal)}>
-          <Gear size="1.57rem"/>
-      </button>
+      <GearIcon tooltip={gvar.gsm.token.edit} onClick={e => setModal(!modal)}/>
     )}
   </div>
 }

@@ -1,6 +1,6 @@
 import { HAS_PIP_API } from "src/utils/supports"
 import { MediaProbe, StateOption } from "../../../types"
-import { clamp, formatDuration, round, timeout } from "../../../utils/helper"
+import { clamp, formatDuration, round } from "../../../utils/helper"
 import { IS_SPECIAL_SEEK, IS_AMAZON, IS_NETFLIX, IS_NATIVE, IS_SMART, IS_BILIBILI, IS_YOUTUBE } from "./isWebsite"
 import { hashWithStoredSalt } from "src/utils/hash"
 import { setSession } from "src/utils/browserUtils"
@@ -373,7 +373,7 @@ function getMediaInfo(elem: HTMLMediaElement) {
     if (fps) res = `${res} (~${fps.toFixed(0)} FPS)`
     lines.push(res)
   }
-  let dur = `${formatDuration(elem.currentTime)} / ${formatDuration(elem.duration)}`
+  let dur = `${formatDuration(elem.currentTime)} / ${elem.duration === Infinity ? '∞' : formatDuration(elem.duration)}`
   if (elem.playbackRate !== 1) {
     dur = `${dur} → ${formatDuration(elem.currentTime / elem.playbackRate)} / ${formatDuration(elem.duration / elem.playbackRate)}`
   }

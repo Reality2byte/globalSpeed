@@ -1,13 +1,15 @@
 {
+  ":appName": "Global Speed: 視頻速度控制",
+  ":appDesc": "設置視頻和音頻的默認速度。",
   "_scale": 1.08,
   "audio": {
-    "captureTab": "捕獲",  
+    "captureTab": "捕獲",
     "releaseTab": "釋放",
     "split": "分離聲道",
     "reverse": "音頻倒放"
   },
   "warnings": {
-    "unusedGlobal":  "釋放未使用的全域快捷鍵。",
+    "unusedGlobal": "釋放未使用的全域快捷鍵。",
     "selectTooltip": "選擇媒體熱鍵的首選視頻。如果您想要從不同的標籤頁（或使用全域熱鍵的另一個程式）控制背景音樂，這會很有幫助。",
     "sliderTooltip": "按住 Shift 鍵以精確控制。",
     "captureRequired": "使用 $1 快捷鍵來啟動。"
@@ -22,8 +24,6 @@
     "create": "建立",
     "reset": "重設",
     "duplicate": "複製",
-    
-    
     "pinTooltip": "固定如果你想要當前標籤頁擁有它自己的上下文（速度，過濾器等）。",
     "mergeBoth": "合併兩者",
     "min": "最小",
@@ -31,19 +31,15 @@
     "on": "開啟",
     "off": "關閉",
     "toggle": "開關",
-
     "element": "元素",
     "backdrop": "背景",
     "both": "兩者",
-
     "query": "查詢",
     "queryTooltip": "用來尋找要過濾元素的 CSS 選擇器。例如，'video, img' 會選擇視頻和圖片。欲了解進階用法，請參閱線上關於 CSS 選擇器的文件。",
-
     "intoPane": "製成窗格",
     "warning": "警告",
     "filters": "濾鏡",
     "transforms": "轉換",
-
     "blockEvents": "阻止事件",
     "blockEventsTooltip": "貪婪模式會嘗試阻止事件的預設行為及其傳播。",
     "color": "顏色",
@@ -64,15 +60,20 @@
     "implode": "內爆",
     "rotate": "旋轉",
     "rows": "列",
-    
-    "copy": "複製",
-    "paste": "貼上",
     "replaceWith": "替換$1為？",
     "invalidNumber": "無效數字",
     "openPage": "開啟頁面",
     "seconds": "秒",
     "percent": "%",
-    "frames": "幀"
+    "frames": "幀",
+    "delete": "刪除",
+    "more": "更多",
+    "assign": "分配",
+    "none": "無",
+    "edit": "編輯",
+    "customize": "自訂",
+    "allowShortcuts": "允許在 $1 使用快捷鍵",
+    "allowOn": "允許於 $1 使用"
   },
   "placer": {
     "windowBounds": {
@@ -146,8 +147,7 @@
     "mediaInfo": "顯示媒體資訊",
     "intoPopup": "轉為彈出窗口",
     "intoPopupTooltip": "將當前標籤頁轉換為彈出窗口。",
-    
-    "skip": "AB跳過", 
+    "skip": "AB跳過",
     "skipTooltip": "跳過標記位置和當前位置之間的視頻段。",
     "cinema": "加深背景",
     "cinemaTooltip": "加深視頻的背景。要退出，按背景或再次使用快捷鍵。",
@@ -157,7 +157,8 @@
     "toggleSpeed": "切換速度",
     "toggleSpeedTooltip": "在快捷速度和最後的速度之間切換。",
     "alwaysOn": "始終開啟",
-    "alwaysOnTooltip": "默認情況下，如果快捷鍵上次使用相同快捷鍵禁用擴充功能，則快捷鍵只能重新激活擴充功能。啟用此設置可確保快捷鍵始終可用於啟用擴充功能，即使它是通過UI菜單關閉的。"    
+    "alwaysOnTooltip": "默認情況下，如果快捷鍵上次使用相同快捷鍵禁用擴充功能，則快捷鍵只能重新激活擴充功能。啟用此設置可確保快捷鍵始終可用於啟用擴充功能，即使它是通過UI菜單關閉的。",
+    "muteTab": "靜音分頁"
   },
   "options": {
     "flags": {
@@ -196,28 +197,24 @@
       "textSize": "文字大小",
       "speedPresets": "速度預設",
       "widget": {
-        "option": "圓形小工具",
         "optionTooltip": "（實驗性）影片可見時將顯示圓形小工具：\n - 影片可見時將顯示圓形小工具。\n - 向左/右拖動以在影片中尋找。\n - 向上/下拖動以調整播放速度。",
         "movementMobile": "\n - 按住圓圈幾秒鐘以移動或刪除它。",
         "movementDesktop": "\n - 使用右鍵拖動圓圈以移動或刪除它。",
         "headerTooltip": "啟用圓形小工具。",
-        "showIcon": "顯示圖示",
-        "showIconTooltip": "在主選單上顯示圖示以方便切換圓形小工具。",
         "autoHide": "自動隱藏",
         "fullscreenOnly": "僅全螢幕",
         "fullscreenOnlyTooltip": "僅在影片全螢幕時顯示小工具。",
         "pressAction": "按下動作",
-        "togglePause": "切換暫停"
+        "togglePause": "切換暫停",
+        "option": "顯示圓形小工具"
       }
     },
     "editor": {
       "header": "快速鍵編輯器",
       "toggleMode": "您可以使用本機快速鍵或全域快速鍵。",
       "toggleModeTooltip": "全域快速鍵可以讓您在使用其他應用程式時控制影片或音訊。",
-
-    
       "menuLabel": "菜單標籤",
-      "triggerMode": "支持多種觸發模式。",
+      "triggerMode": "支持多種觸發模式",
       "triggerModeTooltip": "本地快捷鍵（預設）：靈活的快捷鍵。\n\n全局快捷鍵：當您想在使用其他應用程序時控制視頻或音頻時非常有用。\n\n上下文菜單：適用於不常用的命令。右鍵點擊頁面觸發。",
       "triggerModeTooltipFf": "本地快捷鍵（預設）：靈活的快捷鍵。\n\n上下文菜單：適用於不常用的命令。右鍵點擊頁面觸發。",
       "triggerModes": {
@@ -225,7 +222,7 @@
         "1": "全域快捷鍵",
         "2": "上下文選單"
       },
-      "spacing": "間距", 
+      "spacing": "間距",
       "reversible": "可逆",
       "reversibleTooltip": "允許設置第二個快捷鍵以反轉列表。",
       "wraparound": "環繞",
@@ -253,6 +250,10 @@
     },
     "rules": {
       "header": "URL規則",
+      "setTitleConditions": "設定頁面標題條件",
+      "clearTitleConditions": "清除頁面標題條件",
+      "titleConditionsLabel": "頁面標題必須包含：",
+      "titleConditionsTooltip": "指定一個用逗號分隔的術語列表，頁面標題中必須至少包含一個。例如，可在YouTube上用於將音樂視頻的播放速度設為1倍速。",
       "conditions": "URL條件",
       "startsWith": "以…開始",
       "contains": "包含",
@@ -269,7 +270,12 @@
       "issueDirective": "在Github上提供回饋。",
       "export": "匯出​​",
       "import": "匯入",
-      "areYouSure": "確定嗎？"
+      "areYouSure": "確定嗎？",
+      "copy": "複製設定",
+      "paste": "貼上設定",
+      "exportTooltip": "匯出設定",
+      "importTooltip": "匯入設定",
+      "copied": "已複製！"
     }
   },
   "pageDraw": {
@@ -278,7 +284,7 @@
     "draw": "繪製",
     "erase": "擦除",
     "select": "互動",
-    "selectTooltip": "與網頁互動",    
+    "selectTooltip": "與網頁互動",
     "tips": "一些實用的快捷方式\n1. 使用滑鼠右鍵擦除。\n2. 按住Shift點擊畫線。\n3. 使用Caps Lock切換$1和$2模式\n4. 要調整橡皮擦大小：按住滑鼠中鍵並左右拖動。\n5. 要調整畫筆大小：按住滑鼠中鍵並上下拖動。\n6. 右鍵點擊顏色，將頁面填充為該顏色。\n7. 三次點擊顏色以更改背景顏色。"
   }
 }

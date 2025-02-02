@@ -3,7 +3,6 @@ import { AdjustMode, Keybind, StateView } from "../types"
 import { areYouSure, isFirefox, moveItem, randomId } from "../utils/helper"
 import { commandInfos, CommandName, getDefaultKeybinds, availableCommandNames } from "../defaults/commands"
 import { KeybindControl } from "./keybindControl"
-import { Tooltip } from "../comps/Tooltip"
 import { CommandWarning } from "./CommandWarning"
 import { SetView, useStateView } from "../hooks/useStateView"
 import { FaFile, FaGlobe } from "react-icons/fa"
@@ -13,6 +12,8 @@ import { getDefaultURLCondition } from "../defaults"
 import { requestSyncContextMenu } from "src/utils/configUtils"
 import { ListItem } from "./ListItem"
 import { List } from "./List"
+import { Tooltip } from "src/comps/Tooltip"
+import { GrTooltip } from "react-icons/gr"
 import "./SectionEditor.css"
 
 export function SectionEditor(props: {}) {
@@ -38,18 +39,15 @@ export function SectionEditor(props: {}) {
 
 function EditorDescription(props: {hasKeybinds: boolean}) {
   return (!props.hasKeybinds || isFirefox()) ? null : (
-    <div className="dict">
+    <div className="header">
       <div>
-        <div className="toggleMode">
           <FaFile className="icon active" size={"1.214rem"}/>
-          <div className="divider"></div>
+          <div></div>
           <FaGlobe className="icon active" size={"1.214rem"}/>
         </div>
-        <div>
-          <span>{gvar.gsm.options.editor.triggerMode}</span>
-          <Tooltip pass={{style: {marginLeft: "10px"}}} tooltip={gvar.gsm.options.editor[isFirefox() ? 'triggerModeTooltipFf' : 'triggerModeTooltip']}/>
-        </div>
-      </div>
+        <Tooltip rawOffsetX={60} offset={30} align="top" title={gvar.gsm.options.editor[isFirefox() ? 'triggerModeTooltipFf' : 'triggerModeTooltip']}>
+            <span className="modeSpan">{gvar.gsm.options.editor.triggerMode}<GrTooltip/></span>
+        </Tooltip>
     </div>
   )
 }
@@ -133,8 +131,26 @@ function onMove(setView: SetView, view: StateView, id: string, newIndex: number)
   requestSyncContextMenu()
 }
 
-let options = structuredClone(availableCommandNames)
-options.splice(3, 0, "presets")
+let cachedOptions: {
+  value: string;
+  label: string;
+  disabled?: boolean;
+}[] 
+
+function getOptions() {
+  if (cachedOptions) return cachedOptions 
+  let available = [...availableCommandNames]
+  available.splice(3, 0, 'presets')
+
+  cachedOptions = available.map((name, i) => {
+    let label = "------"
+    if (name) {
+      label = (gvar.gsm.command as any)[name]
+    }
+    return {value: name, label, disabled: name == null}
+  })
+  return cachedOptions 
+}
 
 function EditorControls(props: {view: StateView, setView: SetView}) {
   const { view, setView } = props
@@ -151,9 +167,9 @@ function EditorControls(props: {view: StateView, setView: SetView}) {
       <select value={commandOption} onChange={e => {
         setCommandOption(e.target.value)
       }}>
-        {options.map((name, i) => (
-          <option disabled={name == null} key={name || i} value={name}>{name ? (gvar.gsm.command as any)[name] : "------"}</option>
-        ))}
+        {getOptions().map(v => {
+          return <option key={v.value} disabled={v.disabled} value={v.value}>{v.label}</option>
+        })}
       </select>
 
       {/* Secondary select */}

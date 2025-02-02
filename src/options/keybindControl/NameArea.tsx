@@ -1,21 +1,20 @@
 
 import { TargetFx, AdjustMode, Command, Keybind, Duration, ReferenceValues, Trigger } from "../../types"
 import { produce, Draft } from "immer"
-import { Tooltip } from "../../comps/Tooltip"
 import { filterInfos, FilterName, filterTargets } from "../../defaults/filters"
 import { GoCode, GoRepoForked, GoHistory } from "react-icons/go"
 import { FaPowerOff, FaPause, FaEquals, FaBookmark, FaLink, FaVolumeUp, FaVolumeMute, FaBackward, FaForward, FaArrowRight, FaExchangeAlt, FaPlus, FaMusic, FaList, FaStar, FaInfoCircle, FaMousePointer } from "react-icons/fa"
 import { BsFillBrushFill } from "react-icons/bs"
 import { TbArrowsHorizontal } from "react-icons/tb"
-import { GiAnticlockwiseRotation, GiJumpAcross } from "react-icons/gi"
+import { GiAnticlockwiseRotation } from "react-icons/gi"
 import { BsMusicNoteList } from "react-icons/bs"
 import { TiArrowLoop } from "react-icons/ti"
 import { MdDarkMode, MdFullscreen, MdPictureInPictureAlt, MdWarning } from "react-icons/md"
-import { assertType, domRectGetOffset, feedbackText, getPopupSize } from "../../utils/helper"
+import { assertType, getPopupSize } from "../../utils/helper"
 import { MenuProps } from "../../comps/Menu"
-import { replaceArgs } from "src/utils/gsm"
+import { replaceArgs } from "src/utils/helper"
 import { MdSpeed } from "react-icons/md";
-import { Gear, Pin, Zap } from "src/comps/svgs"
+import { Pin, Zap } from "src/comps/svgs"
 import { KeybindControlProps } from "."
 import { FaRegWindowRestore } from "react-icons/fa6"
 import { KebabList, KebabListProps } from "../KebabList"
@@ -23,7 +22,10 @@ import { isSeekSmall } from "src/utils/configUtils"
 import { PiArrowArcRightFill } from "react-icons/pi"
 import { CinemaModal } from "../CinemaModal"
 import { useState } from "react"
-import { IoEllipsisVertical } from "react-icons/io5"
+import { IoEllipsisVertical, IoHelp } from "react-icons/io5"
+import { Tooltip, TooltipProps } from "src/comps/Tooltip"
+import { RegularTooltip } from "src/comps/RegularTooltip"
+import { GearIcon } from "src/comps/GearIcon"
 
 const invertableKeys = new Set(["fastSeek", "autoPause", "skipPauseSmall", "pauseWhileScrubbing", "relativeToSpeed", "wraparound", "itcWraparound", "showNetDuration", "seekOnce", "allowAlt", "cycleNoWrap", "noHold", "ignoreNavigate", "skipToggleSpeed", "alwaysOn"])
 const memMap = new Map<string, any>()
@@ -72,7 +74,7 @@ export function NameArea(props: NameAreaProps) {
         }
     ]
 
-    let label = (gvar.gsm.command as any)[value.command]
+    let label = (gvar.gsm.command as any)[command.ffName || value.command]
     let tooltip = (gvar.gsm.command as any)[value.command.concat("Tooltip")]
     let tabCaptureWarning = command.requiresTabCapture && !(value.command === "afxCapture" || value.command === "afxReset") && (value.trigger || Trigger.LOCAL) === Trigger.LOCAL
     let adjustMode = command.valueType === "adjustMode" ? (value.adjustMode || AdjustMode.SET) : null 
@@ -110,7 +112,7 @@ export function NameArea(props: NameAreaProps) {
             {(value.command === "fxReset" || value.command === "afxReset") && <GiAnticlockwiseRotation className="hoverYes tr110" />}
             {value.command === "fxSwap" && <FaExchangeAlt className="hoverYes tr110" />}
             {value.command === "pause" && <FaPause className="tr95" />}
-            {value.command === "mute" && <FaVolumeMute className="tr105" />}
+            {(value.command === "mute" || value.command === "muteTab") && <FaVolumeMute className="tr105" />}
             {value.command === "volume" && <FaVolumeUp className="tr105" />}
             {value.command === "PiP" && <MdPictureInPictureAlt className="tr105" />}
             {value.command === "cinema" && <MdDarkMode/>}
@@ -142,20 +144,23 @@ export function NameArea(props: NameAreaProps) {
             <span>{label}</span>
 
             {/* Capture shortcut warning */}
-            {tabCaptureWarning && <Tooltip labelAlt={
-                <MdWarning size="1.35rem" style={{ color: "#ff8888" }} />
-            } tooltip={replaceArgs(gvar.gsm.warnings.captureRequired, [`[ ${gvar.gsm.command.afxCapture} ]`])} />}
+            {tabCaptureWarning && (
+                <Tooltip allowClick={true} withClass="warningTooltip" align="top" title={replaceArgs(gvar.gsm.warnings.captureRequired, [`[ ${gvar.gsm.command.afxCapture} ]`])}>
+                    <MdWarning size="1.35rem" style={{ color: "#ff8888" }} />
+                </Tooltip>
+            )}
+            
 
             {/* cycle adjustMode */}
-            {command.valueType === "adjustMode" && <button className="adjustMode" onClick={e => {
+            {command.valueType === "adjustMode" && <Tooltip  withClass="adjustMode" align="top" title={gvar.gsm.options.editor.adjustModes[value.adjustMode || AdjustMode.SET]}><button onClick={e => {
 
                 props.onChange(value.id, produce(value, d => {
                     saveToMem(value, adjustMode)
                     d.adjustMode = adjustMode % 5 + 1
                     restoreFromMem(d, d.adjustMode, true)
-                    feedbackText(gvar.gsm.options.editor.adjustModes[d.adjustMode], domRectGetOffset((e.currentTarget as HTMLButtonElement).getBoundingClientRect(), 40, 40, true))
                 }))
             }}>
+                
                 {(value.adjustMode || AdjustMode.SET) === AdjustMode.SET && <FaEquals size="1em" />}
                 {value.adjustMode === AdjustMode.ADD && <FaPlus size="1em" />}
                 {value.adjustMode === AdjustMode.CYCLE && <FaList size="1em" />}
@@ -167,10 +172,11 @@ export function NameArea(props: NameAreaProps) {
                     <FaMousePointer size="1em"/>
                     <FaPlus size="1em" />
                 </>}
-            </button>}
+            </button></Tooltip>}
+            
 
             {/* Tooltip */}
-            {tooltip && <Tooltip label="?" tooltip={tooltip} />}
+            {tooltip && <RegularTooltip align="top" title={tooltip}/>}
 
 
             {value.command === "cinema" && <Cinema value={value} onChange={props.onChange}/>}
@@ -200,11 +206,7 @@ export function NameArea(props: NameAreaProps) {
             {/* URL mode */}
             <UrlMode value={value} onChange={props.onChange} />
             {value.command === "intoPopup" && (
-                <button className="icon gear interactive" onClick={() => {
-                    chrome.windows.create({url: chrome.runtime.getURL(`placer.html?id=${value.id}`), type: "popup", ...(value.valuePopupRect ?? getPopupSize())})
-                }}>
-                    <Gear size="1.57rem"/>
-                </button>
+                <GearIcon onClick={() => chrome.windows.create({url: chrome.runtime.getURL(`placer.html?id=${value.id}`), type: "popup", ...(value.valuePopupRect ?? getPopupSize())})}/>
             )}
         </div>
     )
@@ -280,8 +282,8 @@ function ensureSpeedList(list: KebabListProps["list"], handlers: KebabListProps[
     })
 }
 
-export function makeLabelWithTooltip(name: string, tooltip: string) {
-    return <>{name}<Tooltip noHover={true} alert={true} pass={{ style: { paddingLeft: "10px" } }} tooltip={tooltip}/></>
+export function makeLabelWithTooltip(name: string, tooltip: string, align: TooltipProps['align'] = 'right') {
+    return <>{name}<RegularTooltip offset={30} align={align} title={tooltip}/></>
 }
 
 type FilterSelectProps = {

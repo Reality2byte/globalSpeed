@@ -218,6 +218,13 @@ const commandHandlers: {
       ...(kb.valuePopupRect || {})
     })
   },
+  muteTab: async args => {
+    if (!args.tabInfo?.tabId) return 
+    let tabId = args.tabInfo.tabId
+    const isMuted = (await chrome.tabs.get(tabId))?.mutedInfo?.muted
+    args.show({text: isMuted ? '100%' : '0%'})
+    chrome.tabs.update(tabId, {muted: !isMuted})
+  },
   state: async args => {
     const { kb, show, override, fetch } = args 
     const view = await fetch({enabled: true, latestViaShortcut: true})

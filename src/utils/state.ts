@@ -1,6 +1,6 @@
 import type { DebouncedFunc } from "lodash";
 import debounce from "lodash.debounce";
-import { CONTEXT_KEYS, ORL_CONTEXT_KEYS_SET, CONTEXT_KEYS_SET, Context, State, StateView, StateViewSelector, StoredKey, AnyDict, ORL_CONTEXT_KEYS, ORL_GROUPS, REVERSE_ORL_GROUP } from "src/types"
+import { CONTEXT_KEYS, ORL_CONTEXT_KEYS_SET, CONTEXT_KEYS_SET, Context, State, StateView, StateViewSelector, StoredKey, AnyDict, ORL_CONTEXT_KEYS, REVERSE_ORL_GROUP } from "src/types"
 import { deepEqual, listToDict, randomId } from "src/utils/helper"
 import { syncContextMenu } from "./contextMenus";
 
@@ -196,10 +196,6 @@ export class SubscribeView {
     released = false 
 
     constructor(_selector: StateViewSelector | string[], private tabId?: number, private onLaunch?: boolean, cb?: SubViewCallback, public wait?: number, public maxWait?: number) {
-        this.triggerCbs = this.wait ? (
-            debounce(this._triggerCbs, this.wait, {trailing: true, leading: true, ...(this.maxWait == null ? {} : {maxWait: this.maxWait})})
-        ) : this._triggerCbs
-
         this.tabId = tabId ?? 0
         this.selector = Array.isArray(_selector) ? listToDict(_selector, true) : _selector
         cb && this.cbs.add(cb)
@@ -207,6 +203,10 @@ export class SubscribeView {
         this.start()
     }
     start = async () => {
+        this.triggerCbs = this.wait ? (
+            debounce(this._triggerCbs, this.wait, {trailing: true, leading: true, ...(this.maxWait == null ? {} : {maxWait: this.maxWait})})
+        ) : this._triggerCbs
+
         chrome.storage.local.onChanged.addListener(this.handleChange)
         if (this.onLaunch) {
             await this.handleChange(null, true)

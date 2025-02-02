@@ -1,4 +1,6 @@
 {
+  ":appName": "Global Speed: 비디오 속도 제어",
+  ":appDesc": "비디오 및 오디오의 기본 속도를 설정하십시오.",
   "_scale": 1.03,
   "audio": {
     "captureTab": "캡처",
@@ -22,8 +24,6 @@
     "create": "창조하다",
     "reset": "초기화",
     "duplicate": "복제",
-    
-    
     "pinTooltip": "현재 탭이 자체 컨텍스트(속도, 필터 등)를 갖기를 원하면 고정하세요.",
     "mergeBoth": "둘 다 병합",
     "min": "최소",
@@ -31,19 +31,15 @@
     "on": "켜짐",
     "off": "꺼짐",
     "toggle": "토글",
-
     "element": "요소",
     "backdrop": "배경",
     "both": "모두",
-
     "query": "선택기",
     "queryTooltip": "필터링할 요소를 찾기 위해 사용되는 CSS 선택자입니다. 예를 들어, 'video, img'는 비디오와 이미지 모두를 선택합니다. 고급 사용법에 대해서는 온라인 문서에서 CSS 선택자에 대해 확인하세요.",
-    
     "intoPane": "창 생성",
     "warning": "경고",
     "filters": "필터",
     "transforms": "변형",
-
     "blockEvents": "이벤트 방지",
     "blockEventsTooltip": "탐욕 모드는 이벤트 전파 및 기본 동작을 차단하려고 시도합니다.",
     "color": "색",
@@ -64,15 +60,20 @@
     "implode": "내부 붕괴",
     "rotate": "회전",
     "rows": "행",
-    
-    "copy": "복사",
-    "paste": "붙여 넣기",
     "replaceWith": "$1을(를) 어떤 값으로 교체하시겠습니까?",
     "invalidNumber": "잘못된 숫자",
     "openPage": "페이지 열기",
     "seconds": "초",
     "percent": "%",
-    "frames": "프레임"
+    "frames": "프레임",
+    "delete": "삭제",
+    "more": "더보기",
+    "assign": "할당",
+    "none": "없음",
+    "edit": "편집",
+    "customize": "사용자 정의",
+    "allowShortcuts": "단축키를 $1에서 허용",
+    "allowOn": "$1에서 허용"
   },
   "placer": {
     "windowBounds": {
@@ -146,8 +147,7 @@
     "mediaInfo": "미디어 정보 표시",
     "intoPopup": "팝업으로",
     "intoPopupTooltip": "현재 탭을 팝업 창으로 전환합니다.",
-    
-    "skip": "AB 스킵", 
+    "skip": "AB 스킵",
     "skipTooltip": "표시된 위치와 현재 위치 사이의 비디오 세그먼트를 건너뛰기.",
     "cinema": "배경 어둡게",
     "cinemaTooltip": "비디오의 배경을 어둡게 합니다. 종료하려면 배경을 누르거나 다시 단축키를 사용하세요.",
@@ -157,7 +157,8 @@
     "toggleSpeed": "속도 전환",
     "toggleSpeedTooltip": "단축키 속도와 마지막 속도를 전환합니다.",
     "alwaysOn": "항상 켜짐",
-    "alwaysOnTooltip": "기본적으로 바로 가기는 동일한 바로 가기를 사용하여 마지막으로 비활성화된 경우에만 확장 기능을 다시 활성화할 수 있습니다. 이 설정을 활성화하면 UI 메뉴를 통해 비활성화된 경우에도 바로 가기가 항상 확장 기능을 활성화하는 데 작동하도록 합니다."    
+    "alwaysOnTooltip": "기본적으로 바로 가기는 동일한 바로 가기를 사용하여 마지막으로 비활성화된 경우에만 확장 기능을 다시 활성화할 수 있습니다. 이 설정을 활성화하면 UI 메뉴를 통해 비활성화된 경우에도 바로 가기가 항상 확장 기능을 활성화하는 데 작동하도록 합니다.",
+    "muteTab": "탭 음소거"
   },
   "options": {
     "flags": {
@@ -195,28 +196,24 @@
       "textSize": "텍스트 크기",
       "speedPresets": "속도 사전 설정",
       "widget": {
-        "option": "원형 위젯",
         "optionTooltip": "(실험적인 기능) 동영상이 표시되는 동안 원형 위젯이 표시됩니다:\n - 동영상이 표시되는 동안 원형 위젯이 표시됩니다.\n - 동영상을 탐색하려면 왼쪽/오른쪽으로 드래그하세요.\n - 재생 속도를 조절하려면 위/아래로 드래그하세요.",
         "movementMobile": "\n - 원을 몇 초 동안 눌러 이동하거나 삭제하세요.",
         "movementDesktop": "\n - 오른쪽 마우스 버튼을 사용하여 원을 드래그하여 이동하거나 삭제하세요.",
         "headerTooltip": "원형 위젯을 활성화했습니다.",
-        "showIcon": "아이콘 표시",
-        "showIconTooltip": "메인 메뉴에 아이콘을 표시하여 원형 위젯을 쉽게 전환할 수 있습니다.",
         "autoHide": "자동 숨기기",
         "fullscreenOnly": "전체 화면 전용",
         "fullscreenOnlyTooltip": "비디오가 전체 화면일 때만 위젯을 표시합니다.",
         "pressAction": "눌러서 실행",
-        "togglePause": "일시 정지 전환"
+        "togglePause": "일시 정지 전환",
+        "option": "원형 위젯 표시"
       }
     },
     "editor": {
       "header": "바로 가기 편집기",
       "toggleMode": "로컬 또는 전역 바로 가기 키를 사용할 수 있습니다.",
       "toggleModeTooltip": "전역 바로 가기는 다른 프로그램을 사용하는 동안 비디오 또는 오디오를 제어하려는 경우에 유용합니다.",
-
-    
       "menuLabel": "메뉴 레이블",
-      "triggerMode": "여러 트리거 모드를 지원합니다.",
+      "triggerMode": "여러 트리거 모드를 지원합니다",
       "triggerModeTooltip": "로컬 단축키(기본값): 유연한 단축키.\n\n글로벌 단축키: 다른 응용 프로그램을 사용하는 동안 비디오나 오디오를 제어하고 싶을 때 유용합니다.\n\n컨텍스트 메뉴: 자주 사용하지 않는 명령에 이상적입니다. 페이지에서 마우스 오른쪽 버튼을 클릭하여 활성화합니다.",
       "triggerModeTooltipFf": "로컬 단축키(기본값): 유연한 단축키.\n\n컨텍스트 메뉴: 자주 사용하지 않는 명령에 이상적입니다. 페이지에서 마우스 오른쪽 버튼을 클릭하여 활성화합니다.",
       "triggerModes": {
@@ -224,7 +221,7 @@
         "1": "전역 바로가기",
         "2": "컨텍스트 메뉴"
       },
-      "spacing": "간격", 
+      "spacing": "간격",
       "reversible": "반전 가능",
       "reversibleTooltip": "목록을 반전하기 위한 두 번째 단축키 설정 가능.",
       "wraparound": "반복",
@@ -252,6 +249,10 @@
     },
     "rules": {
       "header": "URL 규칙",
+      "setTitleConditions": "페이지 제목 조건 설정",
+      "clearTitleConditions": "페이지 제목 조건 지우기",
+      "titleConditionsLabel": "페이지 제목에 포함되어야 합니다:",
+      "titleConditionsTooltip": "쉼표로 구분된 용어 목록을 지정하고 최소한 하나는 페이지 제목에 포함되어야 합니다. 예를 들어, 음악 비디오의 속도를 1x로 설정하기 위해 YouTube에서 사용할 수 있습니다.",
       "conditions": "URL 조건",
       "startsWith": "로 시작",
       "contains": "포함",
@@ -268,7 +269,12 @@
       "issueDirective": "Github에 대한 피드백을 제공하십시오.",
       "export": "내보내기",
       "import": "가져오기",
-      "areYouSure": "확실합니까?"
+      "areYouSure": "확실합니까?",
+      "copy": "설정 복사",
+      "paste": "설정 붙여넣기",
+      "exportTooltip": "설정 내보내기",
+      "importTooltip": "설정 가져오기",
+      "copied": "복사됨!"
     }
   },
   "pageDraw": {
@@ -277,7 +283,7 @@
     "draw": "그리기",
     "erase": "지우기",
     "select": "상호작용",
-    "selectTooltip": "웹 페이지와 상호 작용",    
+    "selectTooltip": "웹 페이지와 상호 작용",
     "tips": "유용한 단축키 몇 가지\n1. 오른쪽 마우스 버튼으로 지우기.\n2. Shift를 누른 상태에서 클릭하여 선 그리기.\n3. Caps Lock을 사용하여 $1 모드와 $2 모드 간 전환\n4. 지우개 크기를 조절하려면: 가운데 마우스 버튼을 누른 채로 왼쪽 또는 오른쪽으로 드래그.\n5. 브러시 크기를 조절하려면: 가운데 마우스 버튼을 누른 채로 위 또는 아래로 드래그.\n6. 색상을 마우스 오른쪽 버튼으로 클릭하여 페이지를 색상으로 채웁니다.\n7. 색상을 세 번 클릭하여 배경 색상을 변경합니다."
   }
 }

@@ -6,7 +6,7 @@ import { NumericInput } from "../../comps/NumericInput"
 import { commandInfos } from "../../defaults/commands"
 import { CycleInput } from "../../comps/CycleInput"
 import { ModalText } from "../../comps/ModalText"
-import { FaLink, FaGlobe, FaFile, FaBars } from "react-icons/fa"
+import { FaGlobe, FaFile, FaBars, FaRegEdit } from "react-icons/fa"
 import { requestCreateTab } from "../../utils/browserUtils"
 import { domRectGetOffset, feedbackText, isFirefox } from "../../utils/helper"
 import { ThrottledTextInput } from "../../comps/ThrottledTextInput"
@@ -16,6 +16,7 @@ import { requestSyncContextMenu } from "src/utils/configUtils"
 import { DurationSelect, NameArea, makeLabelWithTooltip } from "./NameArea"
 import { Minmax } from "src/comps/Minmax"
 import { KebabList, KebabListProps } from "../KebabList"
+import { Tooltip } from "src/comps/Tooltip"
 import "./styles.css"
 
 
@@ -85,7 +86,7 @@ export const KeybindControl = (props: KeybindControlProps) => {
   command.hasFeedback && kebabList.push({ name: "invertIndicator", label: gvar.gsm.options.flags.showIndicator, checked: props.hideIndicator ? value.invertIndicator : !value.invertIndicator })
 
     ; ((value.trigger || 0) === 0) && kebabList.push(
-      { name: "blockEvents", checked: !!value.greedy, label: makeLabelWithTooltip(gvar.gsm.token.blockEvents, gvar.gsm.token.blockEventsTooltip) }
+      { name: "blockEvents", checked: !!value.greedy, label: makeLabelWithTooltip(gvar.gsm.token.blockEvents, gvar.gsm.token.blockEventsTooltip, 'left') }
     )
 
 
@@ -155,26 +156,27 @@ export const KeybindControl = (props: KeybindControlProps) => {
       <NameArea command={command} onChange={props.onChange} value={value} hasSpecial={hasSpecial} reference={ref} />
 
       {/* Shortcut mode */}
-      <button className={`icon`} onClick={e => {
-        let options = value.trigger === 2 ? [0, 1, 2] : (
-          value.trigger === 1 ? [2, 0, 1] : [1, 2, 0]
-        )
-        if (value.command === "afxCapture") options.splice(options.indexOf(0), 1)
-        if (isFirefox()) options.splice(options.indexOf(1), 1)
+      <Tooltip align="top" title={gvar.gsm.options.editor.triggerModes[value.trigger || Trigger.LOCAL]}>
+        <button className={`buttonTooltip icon`} onClick={e => {
+          let options = value.trigger === 2 ? [0, 1, 2] : (
+            value.trigger === 1 ? [2, 0, 1] : [1, 2, 0]
+          )
+          if (value.command === "afxCapture") options.splice(options.indexOf(0), 1)
+          if (isFirefox()) options.splice(options.indexOf(1), 1)
 
-          let newest = options.shift() as Trigger
+            let newest = options.shift() as Trigger
 
-          props.onChange(value.id, produce(value, d => {
-            d.trigger = newest
-          }))
+            props.onChange(value.id, produce(value, d => {
+              d.trigger = newest
+            }))
 
-        feedbackText(gvar.gsm.options.editor.triggerModes[newest], domRectGetOffset((e.currentTarget as HTMLButtonElement).getBoundingClientRect(), -40, 60, true))
-
-        requestSyncContextMenu()
-      }}>{value.trigger === Trigger.GLOBAL ? <FaGlobe className="tr115"/> : (
-        value.trigger === Trigger.CONTEXT ? <FaBars className="tr115"/> : <FaFile className="tr115" />
-      )}</button>
-
+          requestSyncContextMenu()
+        }}>
+          {value.trigger === Trigger.GLOBAL ? <FaGlobe className="tr115"/> : (
+            value.trigger === Trigger.CONTEXT ? <FaBars className="tr115"/> : <FaFile className="tr115" />
+          )}
+        </button>
+      </Tooltip>
       <div className="talues">
         <TriggerValues value={value} onChange={props.onChange} virtualInput={props.virtualInput} />
         {(value.allowAlt && adjustMode === AdjustMode.CYCLE) && <TriggerValues value={value} onChange={props.onChange} virtualInput={props.virtualInput} isAlt={true} />}
@@ -318,9 +320,11 @@ export const TriggerValues = (props: Props) => {
               <option key={v[0]} value={v[0]}>{v[1]}</option>
             ))}
           </select>
-          <button className="icon" onClick={() => {
-            requestCreateTab(isFirefox() ? `https://support.mozilla.org/kb/manage-extension-shortcuts-firefox` : `chrome://extensions/shortcuts/#:~:text=${encodeURIComponent(`Command ${(value[keyForGlobal] || "commandA").slice(7)}`)}`)
-          }}><FaLink className="tr120" /></button>
+          <Tooltip title={gvar.gsm.token.assign} align="top">
+            <button className="icon" onClick={() => {
+              requestCreateTab(isFirefox() ? `https://support.mozilla.org/kb/manage-extension-shortcuts-firefox` : `chrome://extensions/shortcuts/#:~:text=${encodeURIComponent(`Command ${(value[keyForGlobal] || "commandA").slice(7)}`)}`)
+            }}><FaRegEdit className="tr120" /></button>
+          </Tooltip>
         </div>
       )
     )}
