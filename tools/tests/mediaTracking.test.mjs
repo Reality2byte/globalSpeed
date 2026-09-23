@@ -89,6 +89,49 @@ function autoMedia(env) {
 	).getAutoMedia
 }
 
+for (const hasGetKeys of [true, false]) {
+	test(`closed-tab cleanup preserves live scopes and unrelated keys (${hasGetKeys ? "getKeys" : "legacy fallback"})`, async () => {
+		const data = { "m:scope:1:0": {}, "m:scope:1:2": {}, "m:scope:2:0": {}, "m:pin": {}, "s:mark:example": {} }
+		let enumerated = false
+		const readKeys = () => {
+			enumerated = true
+			return Object.keys(data)
+		}
+		const chrome = {
+			storage: {
+				session: {
+					...(hasGetKeys ? { getKeys: async () => readKeys() } : {}),
+					get: async () => {
+						assert.equal(hasGetKeys, false, "modern cleanup must not load media snapshot values")
+						readKeys()
+						return { ...data }
+					},
+					remove: async (keys) => {
+						for (const key of keys) delete data[key]
+					},
+				},
+			},
+			tabs: {
+				query: async () => {
+					assert.equal(enumerated, true, "the live-tab snapshot must follow key enumeration")
+					return [{ id: 1 }]
+				},
+			},
+		}
+		const { clearClosed } = load(
+			"src/background/utils/getAutoMedia.ts",
+			{
+				"@/contentScript/isolated/utils/genMediaInfo": {},
+				"@/utils/browserUtils": {},
+				"@/utils/state": {},
+			},
+			{ chrome },
+		)
+		await clearClosed()
+		assert.deepEqual(Object.keys(data), ["m:scope:1:0", "m:scope:1:2", "m:pin", "s:mark:example"])
+	})
+}
+
 test("a failed liveness ping keeps a live frame available to the next shortcut", async () => {
 	const env = browserEnv({
 		sendMessage: async () => {

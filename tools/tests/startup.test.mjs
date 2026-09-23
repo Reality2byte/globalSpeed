@@ -164,6 +164,36 @@ test("startup finishes cleaning old tab state before restoring default pins", as
 	assert.equal(view.speed, 1.5)
 })
 
+for (const hasGetKeys of [true, false]) {
+	test(`config export only includes global settings (${hasGetKeys ? "getKeys" : "legacy fallback"})`, async () => {
+		const env = startupEnv({ overrides: { "g:hideBadge": null, "f:salt": "private", "s:captured": [1] } })
+		const get = env.chrome.storage.local.get
+		let reads = 0
+		if (hasGetKeys) env.chrome.storage.local.getKeys = async () => Object.keys(env.data)
+		env.chrome.storage.local.get = async (keys) => {
+			reads++
+			if (hasGetKeys) {
+				assert.ok(Array.isArray(keys))
+				assert.ok(
+					keys.every((key) => key.startsWith("g:")),
+					"tab and session values must not be fetched",
+				)
+			}
+			return get(keys)
+		}
+		const config = await env.state.dumpConfig()
+		assert.deepEqual(JSON.parse(JSON.stringify(config)), {
+			version: 15,
+			enabled: true,
+			speed: 1.5,
+			pinByDefault: true,
+			initialContext: 1,
+			hideBadge: null,
+		})
+		assert.equal(reads, 1)
+	})
+}
+
 test("a previous-tab context remains complete after reload cleanup and is inherited by a new tab", async () => {
 	const env = startupEnv()
 	await env.gvar.es.init()

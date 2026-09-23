@@ -34,15 +34,18 @@ export async function getMediaDataWithScopes() {
 }
 
 export async function clearClosed() {
-	const [tabs, data] = await Promise.all([chrome.tabs.query({}), chrome.storage.session.get<RecordAny>()])
+	const keys = chrome.storage.session.getKeys ? await chrome.storage.session.getKeys() : Object.keys(await chrome.storage.session.get())
+	// Query tabs after the keys so newly created tabs aren't mistaken for closed ones.
+	const tabs = await chrome.tabs.query({})
 	const tabIds = new Set(tabs.map((t) => t.id))
 	const clearKeys: string[] = []
-	for (let key in data) {
+	for (const key of keys) {
 		if (!key.startsWith("m:scope:")) continue
-		if (tabIds.has(data[key]?.tabInfo.tabId)) continue
+		// MediaTower writes m:scope:<tabId>:<frameId>; no snapshot values are needed.
+		if (tabIds.has(Number(key.split(":")[2]))) continue
 		clearKeys.push(key)
 	}
-	chrome.storage.session.remove(clearKeys)
+	if (clearKeys.length) await chrome.storage.session.remove(clearKeys)
 }
 
 export async function getMediaData() {

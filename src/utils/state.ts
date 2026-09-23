@@ -392,7 +392,9 @@ export class SubscribeStorageKeys {
 }
 
 export async function dumpConfig() {
-	const entries = Object.entries(await chrome.storage.local.get())
+	// Older browsers keep the single full read instead of reading all values twice.
+	const keys = chrome.storage.local.getKeys ? await getKeysByPrefix(PREFIX_SETS.G) : undefined
+	const entries = Object.entries(await chrome.storage.local.get(keys))
 	const global = Object.fromEntries(entries.filter(([k]) => k.startsWith("g:")).map(([k, v]) => [k.slice(2), v]))
 	return { ...global } as State
 }
