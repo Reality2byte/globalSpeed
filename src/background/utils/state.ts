@@ -16,7 +16,7 @@ export class EntireState {
 	private rawMap?: AnyDict
 	loadRawMapPromise: Promise<void> | undefined = undefined
 	stateReadyCbs: Set<() => void> = new Set()
-	processedChangeIds: Set<string> = new Set()
+	private pendingChanges: Map<string, chrome.storage.StorageChanges> = new Map()
 	released = false
 
 	constructor() {
@@ -69,15 +69,16 @@ export class EntireState {
 		changes = changes ?? {}
 		const changeId = changes["changeId"]?.newValue as string
 
-		if (changeId) {
-			if (this.processedChangeIds.has(changeId)) {
-				this.processedChangeIds.delete(changeId)
-				return
-			} else {
-				this.processedChangeIds.add(changeId)
-			}
-		}
+		if (changeId && this.pendingChanges.delete(changeId)) return
 
+		// Storage events arrive in order, but can trail our optimistic writes.
+		// Do not let an earlier cleanup erase a newer context while its echo is pending.
+		const pendingKeys = new Set([...this.pendingChanges.values()].flatMap((pending) => Object.keys(pending)))
+		changes = Object.fromEntries(Object.entries(changes).filter(([key]) => !pendingKeys.has(key)))
+		this.applyChanges(changes)
+	}
+	private applyChanges = (changes: chrome.storage.StorageChanges) => {
+		if (!Object.keys(changes).length) return
 		for (let key in changes) {
 			if (Object.hasOwn(changes[key], "newValue")) {
 				this.rawMap[key] = changes[key].newValue
@@ -147,7 +148,15 @@ export class EntireState {
 			changes[key] = { newValue: override[key], oldValue: this.rawMap[key] }
 		}
 
-		await Promise.all([this.handleChange(changes), chrome.storage.local.set(override)])
+		const changeId = override["changeId"] as string
+		this.pendingChanges.set(changeId, changes)
+		this.applyChanges(changes)
+		try {
+			await chrome.storage.local.set(override)
+		} catch (err) {
+			this.pendingChanges.delete(changeId)
+			throw err
+		}
 	}
 }
 

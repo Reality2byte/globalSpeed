@@ -64,7 +64,7 @@ gvar.sess.safeStartupCbs.add(async () => {
 	let tabs = await chrome.tabs.query({})
 	const view = await fetchView({ pinByDefault: true, initialContext: true, customContext: true })
 	if (!view.pinByDefault) return
-	tabs.forEach((tab) => processNewTab(tab, view, true))
+	await Promise.all(tabs.map((tab) => processNewTab(tab, view, true)))
 })
 
 async function ensureContentScripts() {
@@ -90,7 +90,10 @@ chrome.tabs.onRemoved.addListener(async (tabId) => {
 	if (Math.random() > 0.95) clearClosed()
 })
 
-chrome.tabs.onCreated.addListener(processNewTab)
+chrome.tabs.onCreated.addListener(async (tab) => {
+	await gvar.sess.ready
+	await processNewTab(tab)
+})
 
 async function processNewTab(tab: chrome.tabs.Tab, view?: StateView, ignorePreviousTab?: boolean) {
 	view = view || (await fetchView({ pinByDefault: true, initialContext: true, customContext: true }))
@@ -107,7 +110,12 @@ async function processNewTab(tab: chrome.tabs.Tab, view?: StateView, ignorePrevi
 		newContext = (await fetchView(CONTEXT_KEYS, mode === InitialContext.PREVIOUS ? (openerId ?? 0) : 0)) as Context
 	}
 
-	pushView({ override: { ...newContext, isPinned: true }, tabId: tab.id })
+	await pushView({
+		override: { ...newContext, isPinned: true },
+		tabId: tab.id,
+		// Startup has cleared every pin, even if its storage event has not arrived yet.
+		knownPinStatus: ignorePreviousTab ? false : undefined,
+	})
 }
 
 !IS_FIREFOX_BUILD &&

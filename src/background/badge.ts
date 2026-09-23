@@ -6,28 +6,40 @@ import { fetchView } from "@/utils/state"
 
 type BadgeInit = Awaited<ReturnType<typeof getBadgeInit>>
 
-let commonInit: BadgeInit
+let updating = false
+let updatePending = false
 
 const standardIcons = { "128": `images/128.png` }
 const grayscaleIcons = { "128": `images/128g.png` }
 
-async function updateVisible(tabs?: chrome.tabs.Tab[]) {
-	if (!commonInit) {
-		commonInit = await getBadgeInit(0)
+async function updateVisible() {
+	updatePending = true
+	if (updating) return
+	updating = true
+	try {
+		// Startup can restore pinned contexts while an earlier icon is still loading.
+		// Finish each refresh before reading and writing the latest state again.
+		while (updatePending) {
+			updatePending = false
+			await writeBadge(await getBadgeInit(0))
+			await updateTabs(await chrome.tabs.query({ active: true }))
+		}
+	} catch (err) {
+		console.error(err)
+	} finally {
+		updating = false
 	}
-	writeBadge(commonInit, undefined)
-	updateTabs(tabs ?? (await chrome.tabs.query({ active: true })))
 }
 
 const updateVisibleDeb = debounce(updateVisible, 100, { leading: true, trailing: true, maxWait: 1000 })
 
 async function updateTabs(tabs: chrome.tabs.Tab[]) {
-	return Promise.all(tabs.map((tab) => updateTab(tab)))
+	return Promise.allSettled(tabs.map((tab) => updateTab(tab)))
 }
 
 async function updateTab(tab: chrome.tabs.Tab) {
 	const init = await getBadgeInit(tab.id)
-	writeBadge(init, tab.id)
+	await writeBadge(init, tab.id)
 }
 
 async function getBadgeInit(tabId: number) {
@@ -55,9 +67,12 @@ async function getBadgeInit(tabId: number) {
 }
 
 async function writeBadge(init: BadgeInit, tabId?: number) {
-	chrome.action.setBadgeText({ text: init.badgeText, tabId })
-	chrome.action.setBadgeBackgroundColor({ color: init.badgeColor, tabId })
-	chrome.action.setIcon({ path: init.badgeIcons, tabId })
+	// A tab may close during a refresh; still wait for every write to settle.
+	await Promise.allSettled([
+		chrome.action.setBadgeText({ text: init.badgeText, tabId }),
+		chrome.action.setBadgeBackgroundColor({ color: init.badgeColor, tabId }),
+		chrome.action.setIcon({ path: init.badgeIcons, tabId }),
+	])
 }
 
 const WATCHERS = [
