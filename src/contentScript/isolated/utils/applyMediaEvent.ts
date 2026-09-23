@@ -6,6 +6,15 @@ import { CinemaInit, MediaProbe, StateOption } from "../../../types"
 import { clamp, formatDuration, round } from "../../../utils/helper"
 import { Cinema } from "./Cinema"
 import { IS_AMAZON, IS_BILIBILI, IS_NATIVE, IS_NETFLIX, IS_SMART, IS_SPECIAL_SEEK, IS_YOUTUBE } from "./isWebsite"
+import { getDouyinMediaIndex, getDouyinTimeline, requestDouyinSeek } from "./siteAdapters/DouyinTimeline"
+
+export function getMediaTimeline(media: HTMLMediaElement): { currentTime: number; duration: number | null } {
+	const timeline = getDouyinTimeline(media) ?? media
+	return {
+		currentTime: Number.isFinite(timeline.currentTime) ? timeline.currentTime : 0,
+		duration: media.readyState && Number.isFinite(timeline.duration) && timeline.duration > 0 ? timeline.duration : null,
+	}
+}
 
 export function getMediaProbe(media: HTMLMediaElement, includeFormatted?: boolean): MediaProbe {
 	if (!media) return
@@ -20,7 +29,7 @@ export function seek(elem: HTMLMediaElement, value: number, relative: boolean, a
 
 	if (relative) {
 		if (elem instanceof HTMLVideoElement && Math.abs(value).toFixed(4) === "0.0410") {
-			if (elem.seekToNextFrame && value >= 0 && !IS_SPECIAL_SEEK) {
+			if (elem.seekToNextFrame && value >= 0 && !IS_SPECIAL_SEEK && getDouyinMediaIndex(elem) < 0) {
 				elem.seekToNextFrame()
 				return
 			}
@@ -30,7 +39,11 @@ export function seek(elem: HTMLMediaElement, value: number, relative: boolean, a
 				value = value >= 0 ? 1 / fps : -(1 / fps)
 			}
 		}
+	}
 
+	if (requestDouyinSeek(elem, value, relative, autoPause, wraparound)) return
+
+	if (relative) {
 		newTime = elem.currentTime + value
 
 		if (wraparound && elem.duration > 60) {
@@ -47,6 +60,7 @@ export function seek(elem: HTMLMediaElement, value: number, relative: boolean, a
 }
 
 export function seekTo(elem: HTMLMediaElement, value: number, autoPause?: boolean) {
+	if (requestDouyinSeek(elem, value, false, autoPause)) return
 	const paused = elem.paused
 	autoPause && elem.pause()
 
@@ -390,7 +404,7 @@ export function applyMediaEvent(elem: HTMLMediaElement, e: MediaEvent) {
 		return
 	}
 
-	if (!elem?.duration) return
+	if (!elem?.duration && !(e.type === "SEEK" && getDouyinMediaIndex(elem) >= 0)) return
 	if (e.type === "PLAYBACK_RATE") {
 		SetPlaybackRate.set(elem, e.value, e.freePitch)
 	} else if (e.type === "SEEK") {

@@ -5,7 +5,7 @@ import { MEDIA_PROGRESS_PORT, MediaProgressMessage, MediaSeekMessage } from "@/u
 import { getShadow } from "@/utils/nativeUtils"
 import { conformSpeed } from "../../utils/configUtils"
 import { assertType, between, randomId } from "../../utils/helper"
-import { applyMediaEvent, MediaEvent, resetRateLimit } from "./utils/applyMediaEvent"
+import { applyMediaEvent, getMediaTimeline, MediaEvent, resetRateLimit } from "./utils/applyMediaEvent"
 import { generateScopeState } from "./utils/genMediaInfo"
 
 const EVENTS_LAST_PLAYED = new Set(["pause", "playing", "timeupdate"])
@@ -35,9 +35,11 @@ export class MediaTower {
 		const handleMessage = (message: MediaSeekMessage) => {
 			if (message?.type !== "SEEK" || typeof message.key !== "string" || !Number.isFinite(message.time)) return
 			const media = [...this.media].find((m) => m.gsKey === message.key)
-			if (!media?.readyState || !Number.isFinite(media.duration) || media.duration <= 0) return
+			if (!media?.readyState) return
+			const { duration } = getMediaTimeline(media)
+			if (duration === null) return
 			try {
-				applyMediaEvent(media, { type: "SEEK", value: Math.max(0, Math.min(media.duration, message.time)), relative: false })
+				applyMediaEvent(media, { type: "SEEK", value: Math.max(0, Math.min(duration, message.time)), relative: false })
 			} catch {
 				// A source can become unavailable between the snapshot and the seek.
 			} finally {
@@ -58,11 +60,7 @@ export class MediaTower {
 		if (!this.progressPorts.size) return
 		const message: MediaProgressMessage = {
 			type: "PROGRESS",
-			media: [...this.media].map((m) => ({
-				key: m.gsKey,
-				currentTime: Number.isFinite(m.currentTime) ? m.currentTime : 0,
-				duration: m.readyState && Number.isFinite(m.duration) && m.duration > 0 ? m.duration : null,
-			})),
+			media: [...this.media].map((m) => ({ key: m.gsKey, ...getMediaTimeline(m) })),
 		}
 		for (const port of onlyPort ? [onlyPort] : this.progressPorts) {
 			try {

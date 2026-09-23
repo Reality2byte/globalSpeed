@@ -392,6 +392,11 @@ test("MediaTower streams time without extra storage writes and stops after the l
 			"../../utils/configUtils": {},
 			"../../utils/helper": { assertType() {}, randomId: () => "video" },
 			"./utils/applyMediaEvent": {
+				getMediaTimeline: (media) =>
+					media.decoderTimeline ?? {
+						currentTime: media.currentTime,
+						duration: Number.isFinite(media.duration) && media.duration > 0 ? media.duration : null,
+					},
 				applyMediaEvent: (media, event) => {
 					media.currentTime = event.value
 					seeks.push(event)
@@ -440,6 +445,14 @@ test("MediaTower streams time without extra storage writes and stops after the l
 		assert.equal(first.messages.at(-1).media[0].duration, null)
 		first.onMessage.emit({ type: "SEEK", key: "video", time: 30 })
 		assert.equal(seeks.length, 1, "live media is not sought using a finite timeline")
+		media.decoderTimeline = { currentTime: 80, duration: 300 }
+		tower.handleProgressEvent({ target: media, type: "timeupdate", isTrusted: true })
+		tower.sendProgressDeb.flush()
+		assert.equal(first.messages.at(-1).media[0].currentTime, 80)
+		assert.equal(first.messages.at(-1).media[0].duration, 300, "decoder duration enables the popup timeline")
+		first.onMessage.emit({ type: "SEEK", key: "video", time: 500 })
+		assert.equal(seeks.at(-1).value, 300, "popup seeks clamp to decoder duration, not native Infinity")
+		delete media.decoderTimeline
 		first.onDisconnect.emit()
 		const firstCount = first.messages.length
 		media.currentTime = 45

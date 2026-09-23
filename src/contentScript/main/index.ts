@@ -2,6 +2,7 @@ import { IS_FIREFOX_BUILD } from "../../utils/buildFlags"
 import { randomId } from "../../utils/helper"
 import { IS_DOUYIN } from "../isolated/utils/siteAdapters/douyin"
 import { IS_YOUTUBE } from "../isolated/utils/siteAdapters/youtube"
+import { readDouyinTimeline, seekDouyin } from "./utils/DouyinSeek"
 import { DouyinSpeed } from "./utils/DouyinSpeed"
 import { native } from "./utils/nativeCodes"
 import { seekNetflix } from "./utils/seekNetflix"
@@ -202,6 +203,10 @@ class StratumClient {
 		} else if (data.type === "DOUYIN_SPEED" && IS_DOUYIN) {
 			douyinSpeed = douyinSpeed || new DouyinSpeed()
 			douyinSpeed.update(data.speed)
+		} else if (data.type === "DOUYIN_SEEK" && IS_DOUYIN) {
+			seekDouyin(data.index, data.value, data.relative, data.autoPause, data.wraparound)
+		} else if (data.type === "DOUYIN_TIME" && IS_DOUYIN) {
+			this.send({ type: "DOUYIN_TIME", index: data.index, timeline: readDouyinTimeline(data.index) })
 		} else if (data.type === "YOUTUBE_CAPTIONS" && IS_YOUTUBE) {
 			// Read the saved native getter even when Ghost Mode spoofs the page's rate.
 			youtubeCaptions = youtubeCaptions || new YoutubeCaptions((video) => ghostMode.ogDesc.playbackRate.get.call(video))
