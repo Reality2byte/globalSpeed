@@ -17,6 +17,7 @@ export class EntireState {
 	loadRawMapPromise: Promise<void> | undefined = undefined
 	stateReadyCbs: Set<() => void> = new Set()
 	private pendingChanges: Map<string, chrome.storage.StorageChanges> = new Map()
+	private reconciliations: Set<Set<string>> = new Set()
 	released = false
 
 	constructor() {
@@ -71,7 +72,7 @@ export class EntireState {
 
 		if (changeId && this.pendingChanges.delete(changeId)) return
 
-		// Storage events arrive in order, but can trail our optimistic writes.
+		// Assuming storage events follow write order, they can trail our optimistic writes.
 		// Do not let an earlier cleanup erase a newer context while its echo is pending.
 		const pendingKeys = new Set([...this.pendingChanges.values()].flatMap((pending) => Object.keys(pending)))
 		changes = Object.fromEntries(Object.entries(changes).filter(([key]) => !pendingKeys.has(key)))
@@ -80,6 +81,8 @@ export class EntireState {
 	private applyChanges = (changes: chrome.storage.StorageChanges) => {
 		if (!Object.keys(changes).length) return
 		for (let key in changes) {
+			// A recovery read must not overwrite anything changed while it was in flight.
+			for (const keys of this.reconciliations) keys.delete(key)
 			if (Object.hasOwn(changes[key], "newValue")) {
 				this.rawMap[key] = changes[key].newValue
 			} else {
@@ -93,8 +96,34 @@ export class EntireState {
 		const changeKeySet = new Set(changeKeys)
 
 		this.watchers.forEach(([testers, cb]) => {
-			if (this.testWatcher(changeKeys, changeKeySet, testers)) cb(changes)
+			try {
+				if (this.testWatcher(changeKeys, changeKeySet, testers)) {
+					Promise.resolve(cb(changes)).catch((err) => console.error(err))
+				}
+			} catch (err) {
+				console.error(err)
+			}
 		})
+	}
+	private reconcile = async (failedChanges: chrome.storage.StorageChanges) => {
+		const keys = new Set(Object.keys(failedChanges))
+		this.reconciliations.add(keys)
+		try {
+			const stored = await chrome.storage.local.get([...keys])
+			// Keep any surviving optimistic writes, including ones awaiting their echo.
+			for (const pending of this.pendingChanges.values()) {
+				for (const key of keys) {
+					if (pending[key]) stored[key] = pending[key].newValue
+				}
+			}
+			const changes: chrome.storage.StorageChanges = {}
+			for (const key of keys) {
+				changes[key] = Object.hasOwn(stored, key) ? { oldValue: this.rawMap[key], newValue: stored[key] } : { oldValue: this.rawMap[key] }
+			}
+			this.applyChanges(changes)
+		} finally {
+			this.reconciliations.delete(keys)
+		}
 	}
 	testWatcher = (changeKeys: string[], changeKeysSet: Set<string>, testers: WatcherInit[0]) => {
 		if (testers.length === 0) return true
@@ -155,6 +184,7 @@ export class EntireState {
 			await chrome.storage.local.set(override)
 		} catch (err) {
 			this.pendingChanges.delete(changeId)
+			await this.reconcile(changes)
 			throw err
 		}
 	}

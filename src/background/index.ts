@@ -60,11 +60,20 @@ gvar.sess.safeCbs.add(async () => {
 	chrome.storage.session?.setAccessLevel?.({ accessLevel: chrome.storage.AccessLevel.TRUSTED_AND_UNTRUSTED_CONTEXTS })
 })
 
+let pendingStartupTabs: Map<number, chrome.tabs.Tab>
 gvar.sess.safeStartupCbs.add(async () => {
-	let tabs = await chrome.tabs.query({})
+	pendingStartupTabs ??= new Map((await chrome.tabs.query({})).map((tab) => [tab.id, tab]))
 	const view = await fetchView({ pinByDefault: true, initialContext: true, customContext: true })
 	if (!view.pinByDefault) return
-	await Promise.all(tabs.map((tab) => processNewTab(tab, view, true)))
+	const results = await Promise.allSettled(
+		[...pendingStartupTabs.values()].map(async (tab) => {
+			await processNewTab(tab, view, true)
+			pendingStartupTabs.delete(tab.id)
+		}),
+	)
+	// Wait for every write before permitting a retry, and retain only failed tabs.
+	const failure = results.find((result) => result.status === "rejected")
+	if (failure?.status === "rejected") throw failure.reason
 })
 
 async function ensureContentScripts() {
@@ -91,7 +100,7 @@ chrome.tabs.onRemoved.addListener(async (tabId) => {
 })
 
 chrome.tabs.onCreated.addListener(async (tab) => {
-	await gvar.sess.ready
+	await gvar.sess.ensureReady()
 	await processNewTab(tab)
 })
 

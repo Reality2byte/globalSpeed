@@ -6,12 +6,16 @@ declare global {
 	}
 }
 
+type SessionCallback = () => void | Promise<void>
+
 class Session {
 	installCbs: Set<() => void> = new Set()
-	safeCbs: Set<() => void> = new Set()
-	safeStartupCbs: Set<() => void> = new Set()
+	safeCbs: Set<SessionCallback> = new Set()
+	safeStartupCbs: Set<SessionCallback> = new Set()
 	ready?: Promise<void>
 	#loadedForSession = false
+	#installPending = false
+	#completedCbs = new Set<SessionCallback>()
 	constructor() {
 		chrome.runtime.onInstalled.addListener(this.handleInstall)
 		chrome.runtime.onStartup.addListener(this.handleStartup)
@@ -19,20 +23,34 @@ class Session {
 	handleInstall = async () => {
 		if (this.#loadedForSession) return
 		this.#loadedForSession = true
-		this.installCbs.forEach((cb) => cb())
-		this.ready = this.handleCommon()
-		await this.ready
+		this.#installPending = true
+		await this.ensureReady()
 	}
 	handleStartup = async () => {
 		if (this.#loadedForSession) return
 		this.#loadedForSession = true
-		this.ready = this.handleCommon()
-		await this.ready
+		await this.ensureReady()
+	}
+	ensureReady = () => {
+		// Ordinary worker wakes have no session initialization to retry.
+		if (!this.#loadedForSession) return Promise.resolve()
+		return (this.ready ??= this.handleCommon().catch((err) => {
+			this.ready = undefined
+			throw err
+		}))
 	}
 	handleCommon = async () => {
-		await gvar.installPromise
-		await Promise.all([...this.safeCbs].map((cb) => cb()))
-		await Promise.all([...this.safeStartupCbs].map((cb) => cb()))
+		if (this.#installPending) {
+			this.installCbs.forEach((cb) => cb())
+			await gvar.installPromise
+			this.#installPending = false
+		}
+		// Resume failed initialization without repeating completed cleanup.
+		for (const cb of [...this.safeCbs, ...this.safeStartupCbs]) {
+			if (this.#completedCbs.has(cb)) continue
+			await cb()
+			this.#completedCbs.add(cb)
+		}
 	}
 }
 
