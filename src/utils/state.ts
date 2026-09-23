@@ -423,8 +423,13 @@ export const PREFIX_SETS = {
 }
 
 export async function getKeysByPrefix(prefixes: string[], items?: AnyDict) {
-	items = items ?? (await chrome.storage.local.get())
-	return Object.keys(items).filter((v) => prefixes.some((prefix) => v.startsWith(prefix)))
+	const keys =
+		items != null
+			? Object.keys(items)
+			: chrome.storage.local.getKeys
+				? await chrome.storage.local.getKeys()
+				: Object.keys(await chrome.storage.local.get())
+	return keys.filter((v) => prefixes.some((prefix) => v.startsWith(prefix)))
 }
 
 export async function localGetAuto(keys?: string | string[] | AnyDict): Promise<AnyDict> {

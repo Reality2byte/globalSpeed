@@ -50,11 +50,15 @@ gvar.sess.installCbs.add(() => {
 })
 
 gvar.sess.safeCbs.add(async () => {
-	const items = await chrome.storage.local.get()
-	let keys = Object.keys(items).filter((k) => items[k] == null)
-
-	keys = [...keys, ...(await getKeysByPrefix(PREFIX_SETS.SESSION, items))]
-	if (keys.length) await chrome.storage.local.remove(keys)
+	// Session state must reset every time; null entries only need occasional cleanup.
+	const items = Math.random() < 1 / 50 ? await chrome.storage.local.get() : undefined
+	const keys = new Set(await getKeysByPrefix(PREFIX_SETS.SESSION, items))
+	if (items) {
+		for (const key in items) {
+			if (items[key] == null) keys.add(key)
+		}
+	}
+	if (keys.size) await chrome.storage.local.remove([...keys])
 
 	IS_FIREFOX_BUILD || ensureContentScripts()
 	chrome.storage.session?.setAccessLevel?.({ accessLevel: chrome.storage.AccessLevel.TRUSTED_AND_UNTRUSTED_CONTEXTS })
