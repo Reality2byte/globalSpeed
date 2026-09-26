@@ -235,7 +235,9 @@
 		"toggleSpeedTooltip": "Beralih antara kecepatan pintasan dan kecepatan terakhir",
 		"alwaysOn": "Selalu aktif",
 		"alwaysOnTooltip": "Izinkan pintasan mengaktifkan ekstensi meskipun dinonaktifkan dari menu",
-		"muteTab": "Bisukan tab"
+		"muteTab": "Bisukan tab",
+		"selectMedia": "Pilih media",
+		"selectMediaTooltip": "Pilih video atau audio yang dikontrol oleh pintasan media Anda."
 	},
 	"options": {
 		"flags": {
@@ -291,8 +293,6 @@
 				"skipForward": "Lompat maju",
 				"skipBackward": "Lompat mundur"
 			},
-			"qrCodeTop": "Pindai untuk digunakan di...",
-			"qrCodeBottom": "Edge untuk seluler",
 			"holdToSpeedUp": "Tekan dan tahan untuk mempercepat",
 			"holdToSpeedUpTooltip": "Tekan dan tahan video untuk mempercepat sementara",
 			"longPressThreshold": "Durasi tekan lama",
@@ -406,5 +406,11 @@
 		"resetInstruction": "Jika masalah berlanjut, atur ulang semua pengaturan ekstensi ke nilai default.",
 		"resetAction": "Atur ulang pengaturan",
 		"reinstallInstruction": "Sebagai upaya terakhir, instal ulang ekstensi."
+	},
+	"mediaPicker": {
+		"automatic": "Otomatis",
+		"loading": "Memuat media…",
+		"empty": "Tidak ada media tersedia",
+		"failed": "Tidak dapat memperbarui media. Tutup dan coba lagi."
 	}
 }

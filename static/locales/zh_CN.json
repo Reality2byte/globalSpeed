@@ -236,7 +236,9 @@
 		"toggleSpeedTooltip": "在快捷速度和最后的速度之间切换",
 		"alwaysOn": "始终开启",
 		"alwaysOnTooltip": "允许快捷键启用扩展程序，即使它已在菜单中被禁用",
-		"muteTab": "静音标签页"
+		"muteTab": "静音标签页",
+		"selectMedia": "选择媒体",
+		"selectMediaTooltip": "选择要通过媒体快捷键控制的视频或音频。"
 	},
 	"options": {
 		"flags": {
@@ -293,8 +295,6 @@
 				"skipForward": "向前跳转",
 				"skipBackward": "向后跳转"
 			},
-			"qrCodeTop": "扫码使用",
-			"qrCodeBottom": "Edge 手机版",
 			"holdToSpeedUp": "按住快进",
 			"holdToSpeedUpTooltip": "按住视频可临时加速播放",
 			"longPressThreshold": "长按时长",
@@ -408,5 +408,11 @@
 		"resetInstruction": "如果问题仍然存在，请将所有扩展程序设置重置为默认值。",
 		"resetAction": "重置设置",
 		"reinstallInstruction": "万不得已时，请重新安装扩展程序。"
+	},
+	"mediaPicker": {
+		"automatic": "自动",
+		"loading": "正在加载媒体…",
+		"empty": "没有可用媒体",
+		"failed": "无法更新媒体。请关闭后重试。"
 	}
 }

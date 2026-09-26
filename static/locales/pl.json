@@ -235,7 +235,9 @@
 		"toggleSpeedTooltip": "Przełącz między prędkością skrótu a ostatnią prędkością",
 		"alwaysOn": "Zawsze włączone",
 		"alwaysOnTooltip": "Pozwól skrótowi włączać rozszerzenie, nawet jeśli zostało wyłączone z menu",
-		"muteTab": "Wycisz kartę"
+		"muteTab": "Wycisz kartę",
+		"selectMedia": "Wybierz multimedia",
+		"selectMediaTooltip": "Wybierz wideo lub dźwięk, którymi sterują skróty multimedialne."
 	},
 	"options": {
 		"flags": {
@@ -292,8 +294,6 @@
 				"skipForward": "Przeskocz do przodu",
 				"skipBackward": "Przeskocz do tyłu"
 			},
-			"qrCodeTop": "Zeskanuj, aby użyć na...",
-			"qrCodeBottom": "Edge na urządzenia mobilne",
 			"holdToSpeedUp": "Naciśnij i przytrzymaj, aby przyspieszyć",
 			"holdToSpeedUpTooltip": "Naciśnij i przytrzymaj wideo, aby tymczasowo przyspieszyć",
 			"longPressThreshold": "Czas długiego naciśnięcia",
@@ -407,5 +407,11 @@
 		"resetInstruction": "Jeśli problem nadal występuje, przywróć domyślne wartości wszystkich ustawień rozszerzenia.",
 		"resetAction": "Zresetuj ustawienia",
 		"reinstallInstruction": "W ostateczności zainstaluj rozszerzenie ponownie."
+	},
+	"mediaPicker": {
+		"automatic": "Automatycznie",
+		"loading": "Wczytywanie multimediów…",
+		"empty": "Brak dostępnych multimediów",
+		"failed": "Nie udało się zaktualizować multimediów. Zamknij i spróbuj ponownie."
 	}
 }

@@ -12,6 +12,7 @@ const scriptEntries = {
 	pageDraw: "contentScript/pageDraw/index.ts",
 	pane: "contentScript/pane/index.ts",
 	itcPanel: "contentScript/itcPanel/index.ts",
+	mediaPicker: "contentScript/mediaPicker/index.ts",
 	"sound-touch-processor": "offscreen/SoundTouchProcessor.ts",
 	"reverse-sound-processor": "offscreen/ReverseProcessor.ts",
 	mainLoader: "contentScript/main/loader.ts",

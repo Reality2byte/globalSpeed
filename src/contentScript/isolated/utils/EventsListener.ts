@@ -14,6 +14,10 @@ export class CallbackSet<E> {
 }
 
 export class EventsListener {
+	/** A focused extension picker gets keyboard events before page shortcuts. */
+	keyCapture?: (e: KeyboardEvent) => void
+	private capturedKeys = new Set<string>()
+
 	keyDownCbs = new CallbackSet<KeyboardEvent>()
 	keyUpCbs = new CallbackSet<KeyboardEvent>()
 
@@ -68,11 +72,23 @@ export class EventsListener {
 		window.addEventListener("webkitvisibilitychange", this.handleVisibilityChange, true)
 	}
 	handleKeyDown = (e: KeyboardEvent) => {
+		if (this.keyCapture || this.capturedKeys.has(e.code)) {
+			this.capturedKeys.add(e.code)
+			e.preventDefault()
+			e.stopImmediatePropagation()
+			this.keyCapture?.(e)
+			return
+		}
 		this.keyDownCbs.forEach((cb) => {
 			cb(e)
 		})
 	}
 	handleKeyUp = (e: KeyboardEvent) => {
+		if (this.capturedKeys.delete(e.code)) {
+			e.preventDefault()
+			e.stopImmediatePropagation()
+			return
+		}
 		this.keyUpCbs.forEach((cb) => {
 			cb(e)
 		})
@@ -149,6 +165,7 @@ export class EventsListener {
 		})
 	}
 	handleBlur = (e: Event) => {
+		this.capturedKeys.clear()
 		this.blurCbs.forEach((cb) => {
 			cb(e)
 		})

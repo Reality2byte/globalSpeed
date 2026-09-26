@@ -235,7 +235,9 @@
 		"toggleSpeedTooltip": "Alterna tra la velocità della scorciatoia e l’ultima velocità",
 		"alwaysOn": "Sempre attivo",
 		"alwaysOnTooltip": "Consenti alla scorciatoia di abilitare l’estensione anche se è stata disattivata dal menu",
-		"muteTab": "Silenzia scheda"
+		"muteTab": "Silenzia scheda",
+		"selectMedia": "Seleziona contenuto multimediale",
+		"selectMediaTooltip": "Scegli quale video o audio controllare con le scorciatoie multimediali."
 	},
 	"options": {
 		"flags": {
@@ -292,8 +294,6 @@
 				"skipForward": "Salta avanti",
 				"skipBackward": "Salta indietro"
 			},
-			"qrCodeTop": "Scansiona per utilizzare su...",
-			"qrCodeBottom": "Edge per dispositivi mobili",
 			"holdToSpeedUp": "Tieni premuto per avanzare velocemente",
 			"holdToSpeedUpTooltip": "Tieni premuto sui video per accelerare temporaneamente",
 			"longPressThreshold": "Durata pressione lunga",
@@ -407,5 +407,11 @@
 		"resetInstruction": "Se il problema persiste, ripristina tutte le impostazioni dell’estensione ai valori predefiniti.",
 		"resetAction": "Ripristina impostazioni",
 		"reinstallInstruction": "Come ultima risorsa, reinstalla l’estensione."
+	},
+	"mediaPicker": {
+		"automatic": "Automatico",
+		"loading": "Caricamento dei contenuti…",
+		"empty": "Nessun contenuto disponibile",
+		"failed": "Impossibile aggiornare i contenuti. Chiudi e riprova."
 	}
 }

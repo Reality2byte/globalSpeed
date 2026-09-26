@@ -235,7 +235,9 @@
 		"toggleSpeedTooltip": "단축키 속도와 마지막 속도를 전환합니다",
 		"alwaysOn": "항상 켜짐",
 		"alwaysOnTooltip": "메뉴에서 비활성화했더라도 단축키로 확장 프로그램을 활성화할 수 있도록 허용합니다",
-		"muteTab": "탭 음소거"
+		"muteTab": "탭 음소거",
+		"selectMedia": "미디어 선택",
+		"selectMediaTooltip": "미디어 단축키로 제어할 동영상이나 오디오를 선택합니다."
 	},
 	"options": {
 		"flags": {
@@ -292,8 +294,6 @@
 				"skipForward": "앞으로 건너뛰기",
 				"skipBackward": "뒤로 건너뛰기"
 			},
-			"qrCodeTop": "스캔하여 사용해 보세요...",
-			"qrCodeBottom": "모바일용 Edge",
 			"holdToSpeedUp": "길게 눌러 빨리 감기",
 			"holdToSpeedUpTooltip": "영상을 길게 누르면 일시적으로 속도가 빨라집니다",
 			"longPressThreshold": "길게 누르기 시간",
@@ -407,5 +407,11 @@
 		"resetInstruction": "문제가 계속되면 모든 확장 프로그램 설정을 기본값으로 초기화하세요.",
 		"resetAction": "설정 초기화",
 		"reinstallInstruction": "마지막 방법으로 확장 프로그램을 다시 설치하세요."
+	},
+	"mediaPicker": {
+		"automatic": "자동",
+		"loading": "미디어 불러오는 중…",
+		"empty": "사용 가능한 미디어 없음",
+		"failed": "미디어를 업데이트할 수 없습니다. 닫고 다시 시도하세요."
 	}
 }

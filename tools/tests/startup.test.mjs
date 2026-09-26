@@ -43,7 +43,7 @@ function startupEnv({ pinned = false, overrides = {} } = {}) {
 	const pendingEvents = []
 	const dispatch = (changes) => pendingEvents.push(() => onChanged.emit(changes))
 	const chrome = {
-		runtime: { onInstalled: eventChannel(), onStartup: eventChannel(), onMessage: eventChannel() },
+		runtime: { onInstalled: eventChannel(), onStartup: eventChannel(), onMessage: eventChannel(), onConnect: eventChannel() },
 		tabs: {
 			onCreated: eventChannel(),
 			onRemoved: eventChannel(),

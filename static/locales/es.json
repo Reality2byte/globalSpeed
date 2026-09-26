@@ -235,7 +235,9 @@
 		"toggleSpeedTooltip": "Alterna entre la velocidad del atajo y la última velocidad",
 		"alwaysOn": "Siempre activo",
 		"alwaysOnTooltip": "Permite que el atajo active la extensión aunque se haya desactivado desde el menú",
-		"muteTab": "Silenciar pestaña"
+		"muteTab": "Silenciar pestaña",
+		"selectMedia": "Seleccionar medio",
+		"selectMediaTooltip": "Elige qué vídeo o audio controlan tus atajos multimedia."
 	},
 	"options": {
 		"flags": {
@@ -291,8 +293,6 @@
 				"skipForward": "Saltar adelante",
 				"skipBackward": "Saltar hacia atrás"
 			},
-			"qrCodeTop": "Escanea para usar en...",
-			"qrCodeBottom": "Edge para móviles",
 			"holdToSpeedUp": "Mantén presionado para adelantar",
 			"holdToSpeedUpTooltip": "Mantén presionado el video para acelerar temporalmente",
 			"longPressThreshold": "Duración de pulsación larga",
@@ -406,5 +406,11 @@
 		"resetInstruction": "Si el problema continúa, restablece toda la configuración de la extensión a sus valores predeterminados.",
 		"resetAction": "Restablecer configuración",
 		"reinstallInstruction": "Como último recurso, reinstala la extensión."
+	},
+	"mediaPicker": {
+		"automatic": "Automático",
+		"loading": "Cargando medios…",
+		"empty": "No hay medios disponibles",
+		"failed": "No se pudieron actualizar los medios. Cierra e inténtalo de nuevo."
 	}
 }

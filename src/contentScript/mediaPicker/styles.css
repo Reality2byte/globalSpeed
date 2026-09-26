@@ -1,0 +1,67 @@
+:host {
+	all: initial;
+}
+
+:is(div:popover-open, div.popoverOpenYah) {
+	font-family: ui-monospace, "Cascadia Mono", "SFMono-Regular", "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+	font-size: 14px;
+	position: fixed;
+	inset: 16px auto auto 16px;
+	box-sizing: border-box;
+	width: min(320px, calc(100vw - 32px));
+	max-height: calc(100vh - 32px);
+	margin: 0;
+	padding: 4px;
+	border: 1px solid #fff;
+	border-radius: 0;
+	background: #000;
+	color: #fff;
+	text-align: start;
+	overflow: auto;
+	color-scheme: dark;
+	outline: none;
+}
+
+.options {
+	max-height: 50vh;
+	overflow: auto;
+	outline: none;
+}
+
+.option {
+	position: relative;
+	padding: 10px 24px 10px 10px;
+	border: 1px solid transparent;
+	cursor: pointer;
+}
+
+.option[aria-selected="true"] {
+	background: #164e63;
+	color: #cffafe;
+}
+
+.option[data-focused="true"] {
+	background: #fff;
+	color: #000;
+}
+
+.option[aria-selected="true"][data-focused="true"] {
+	background: #a5f3fc;
+	color: #000;
+}
+
+.title {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.detail,
+[role="status"] {
+	font-size: 12px;
+	color: inherit;
+}
+
+[role="status"]:not(:empty) {
+	padding: 4px 6px;
+}

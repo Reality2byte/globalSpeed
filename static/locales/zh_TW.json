@@ -235,7 +235,9 @@
 		"toggleSpeedTooltip": "在快捷鍵速度與上次速度之間切換",
 		"alwaysOn": "永遠開啟",
 		"alwaysOnTooltip": "允許快捷鍵啟用擴充功能，即使它已從選單中停用",
-		"muteTab": "分頁靜音"
+		"muteTab": "分頁靜音",
+		"selectMedia": "選擇媒體",
+		"selectMediaTooltip": "選擇要透過媒體快捷鍵控制的影片或音訊。"
 	},
 	"options": {
 		"flags": {
@@ -292,8 +294,6 @@
 				"skipForward": "向前跳轉",
 				"skipBackward": "向後跳轉"
 			},
-			"qrCodeTop": "掃碼使用",
-			"qrCodeBottom": "Edge 手機版",
 			"holdToSpeedUp": "長按以快轉",
 			"holdToSpeedUpTooltip": "按住影片可暫時加速播放",
 			"longPressThreshold": "長按時間",
@@ -407,5 +407,11 @@
 		"resetInstruction": "如果問題仍然存在，請將所有擴充功能設定重設為預設值。",
 		"resetAction": "重設設定",
 		"reinstallInstruction": "萬不得已時，請重新安裝擴充功能。"
+	},
+	"mediaPicker": {
+		"automatic": "自動",
+		"loading": "正在載入媒體…",
+		"empty": "沒有可用媒體",
+		"failed": "無法更新媒體。請關閉後重試。"
 	}
 }

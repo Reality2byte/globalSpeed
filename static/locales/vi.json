@@ -235,7 +235,9 @@
 		"toggleSpeedTooltip": "Chuyển đổi giữa tốc độ phím tắt và tốc độ cuối cùng",
 		"alwaysOn": "Luôn bật",
 		"alwaysOnTooltip": "Cho phép phím tắt bật tiện ích mở rộng ngay cả khi nó đã bị tắt từ menu",
-		"muteTab": "Tắt tiếng tab"
+		"muteTab": "Tắt tiếng tab",
+		"selectMedia": "Chọn nội dung đa phương tiện",
+		"selectMediaTooltip": "Chọn video hoặc âm thanh mà các phím tắt đa phương tiện sẽ điều khiển."
 	},
 	"options": {
 		"flags": {
@@ -292,8 +294,6 @@
 				"skipForward": "Tua tới",
 				"skipBackward": "Tua lùi"
 			},
-			"qrCodeTop": "Quét để sử dụng trên...",
-			"qrCodeBottom": "Edge cho di động",
 			"holdToSpeedUp": "Nhấn và giữ để tua nhanh",
 			"holdToSpeedUpTooltip": "Nhấn và giữ video để tạm thời tăng tốc",
 			"longPressThreshold": "Thời gian nhấn giữ",
@@ -407,5 +407,11 @@
 		"resetInstruction": "Nếu sự cố vẫn tiếp diễn, hãy đặt lại toàn bộ cài đặt tiện ích mở rộng về mặc định.",
 		"resetAction": "Đặt lại cài đặt",
 		"reinstallInstruction": "Nếu không còn cách nào khác, hãy cài đặt lại tiện ích mở rộng."
+	},
+	"mediaPicker": {
+		"automatic": "Tự động",
+		"loading": "Đang tải nội dung…",
+		"empty": "Không có nội dung khả dụng",
+		"failed": "Không thể cập nhật nội dung. Đóng rồi thử lại."
 	}
 }

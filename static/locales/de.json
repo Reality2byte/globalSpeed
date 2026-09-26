@@ -235,7 +235,9 @@
 		"toggleSpeedTooltip": "Zwischen der Geschwindigkeit des Tastenkürzels und der letzten Geschwindigkeit umschalten",
 		"alwaysOn": "Immer an",
 		"alwaysOnTooltip": "Erlaube es dem Kurzbefehl, die Erweiterung auch dann zu aktivieren, wenn sie im Menü deaktiviert wurde",
-		"muteTab": "Tab stummschalten"
+		"muteTab": "Tab stummschalten",
+		"selectMedia": "Medium auswählen",
+		"selectMediaTooltip": "Wähle aus, welches Video oder Audio deine Medien-Tastenkürzel steuern."
 	},
 	"options": {
 		"flags": {
@@ -292,8 +294,6 @@
 				"skipForward": "Vorspringen",
 				"skipBackward": "Zurückspringen"
 			},
-			"qrCodeTop": "Scannen zur Verwendung in...",
-			"qrCodeBottom": "Edge für Mobilgeräte",
 			"holdToSpeedUp": "Zum Vorspulen gedrückt halten",
 			"holdToSpeedUpTooltip": "Gedrückt halten, um Videos vorübergehend zu beschleunigen",
 			"longPressThreshold": "Dauer für langes Drücken",
@@ -407,5 +407,11 @@
 		"resetInstruction": "Wenn das Problem weiterhin besteht, setze alle Erweiterungseinstellungen auf die Standardwerte zurück.",
 		"resetAction": "Einstellungen zurücksetzen",
 		"reinstallInstruction": "Installiere als letzten Ausweg die Erweiterung neu."
+	},
+	"mediaPicker": {
+		"automatic": "Automatisch",
+		"loading": "Medien werden geladen…",
+		"empty": "Keine Medien verfügbar",
+		"failed": "Medien konnten nicht aktualisiert werden. Schließen und erneut versuchen."
 	}
 }

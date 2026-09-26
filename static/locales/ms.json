@@ -235,7 +235,9 @@
 		"toggleSpeedTooltip": "Tukar antara kelajuan pintasan dan kelajuan terakhir",
 		"alwaysOn": "Sentiasa aktif",
 		"alwaysOnTooltip": "Benarkan pintasan untuk mengaktifkan sambungan walaupun ia telah dinyahdayakan daripada menu",
-		"muteTab": "Senyapkan tab"
+		"muteTab": "Senyapkan tab",
+		"selectMedia": "Pilih media",
+		"selectMediaTooltip": "Pilih video atau audio yang dikawal oleh pintasan media anda."
 	},
 	"options": {
 		"flags": {
@@ -292,8 +294,6 @@
 				"skipForward": "Langkau ke hadapan",
 				"skipBackward": "Langkau ke belakang"
 			},
-			"qrCodeTop": "Imbas untuk digunakan di...",
-			"qrCodeBottom": "Edge untuk peranti mudah alih",
 			"holdToSpeedUp": "Tekan dan tahan untuk percepat",
 			"holdToSpeedUpTooltip": "Tekan dan tahan video untuk mempercepat sementara",
 			"longPressThreshold": "Tempoh tekan lama",
@@ -407,5 +407,11 @@
 		"resetInstruction": "Jika masalah berterusan, tetapkan semula semua tetapan sambungan kepada nilai lalai.",
 		"resetAction": "Tetapkan semula tetapan",
 		"reinstallInstruction": "Sebagai langkah terakhir, pasang semula sambungan."
+	},
+	"mediaPicker": {
+		"automatic": "Automatik",
+		"loading": "Memuatkan media…",
+		"empty": "Tiada media tersedia",
+		"failed": "Tidak dapat mengemas kini media. Tutup dan cuba lagi."
 	}
 }

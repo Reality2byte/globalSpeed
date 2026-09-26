@@ -1,4 +1,5 @@
 import type { ItcPanel } from "@/contentScript/itcPanel"
+import type { MediaPicker } from "@/contentScript/mediaPicker"
 import { gvar } from "@/globalVar"
 import { requestTabInfo } from "@/utils/browserUtils"
 import { timeout } from "@/utils/helper"
@@ -30,6 +31,7 @@ export class Overseer {
 	configSync: ConfigSync
 	indicator: Indicator
 	itcPanel?: ItcPanel
+	mediaPicker?: MediaPicker
 	circle?: Circle
 
 	orphaned = false
@@ -106,6 +108,8 @@ export class Overseer {
 		delete this.visibleSync
 		this.configSync?.release()
 		delete this.configSync
+		this.mediaPicker?.release()
+		delete this.mediaPicker
 		this.itcPanel?.release()
 		delete this.itcPanel
 		this.circle?.release()

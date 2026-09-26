@@ -235,7 +235,9 @@
 		"toggleSpeedTooltip": "Bascule entre la vitesse du raccourci et la dernière vitesse",
 		"alwaysOn": "Toujours activé",
 		"alwaysOnTooltip": "Autoriser le raccourci à activer l’extension même si elle a été désactivée depuis le menu",
-		"muteTab": "Couper le son de l’onglet"
+		"muteTab": "Couper le son de l’onglet",
+		"selectMedia": "Sélectionner un média",
+		"selectMediaTooltip": "Choisissez la vidéo ou le contenu audio que vos raccourcis multimédias contrôlent."
 	},
 	"options": {
 		"flags": {
@@ -292,8 +294,6 @@
 				"skipForward": "Avancer",
 				"skipBackward": "Reculer"
 			},
-			"qrCodeTop": "Scannez pour utiliser sur...",
-			"qrCodeBottom": "Edge pour mobile",
 			"holdToSpeedUp": "Appuyez et maintenez pour accélérer",
 			"holdToSpeedUpTooltip": "Appuyez longuement sur une vidéo pour accélérer temporairement",
 			"longPressThreshold": "Durée d’appui long",
@@ -407,5 +407,11 @@
 		"resetInstruction": "Si le problème persiste, rétablissez les valeurs par défaut de tous les paramètres de l’extension.",
 		"resetAction": "Réinitialiser les paramètres",
 		"reinstallInstruction": "En dernier recours, réinstallez l’extension."
+	},
+	"mediaPicker": {
+		"automatic": "Automatique",
+		"loading": "Chargement des médias…",
+		"empty": "Aucun média disponible",
+		"failed": "Impossible de mettre à jour les médias. Fermez et réessayez."
 	}
 }

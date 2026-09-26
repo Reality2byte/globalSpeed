@@ -27,6 +27,7 @@ export type CommandName =
 	| "fullscreen"
 	| "PiP"
 	| "mediaInfo"
+	| "selectMedia"
 	| "cinema"
 	| "fxState"
 	| "fxReset"
@@ -377,6 +378,18 @@ export let commandInfos: { [key in CommandName]: Command } = {
 			command: "mediaInfo",
 			enabled: true,
 			greedy: true,
+		}),
+	},
+	selectMedia: {
+		group: CommandGroup.MEDIA,
+		disableOnMobile: true,
+		prohibitAsMenu: true,
+		generate: () => ({
+			id: randomId(),
+			command: "selectMedia",
+			enabled: true,
+			greedy: true,
+			noRepeat: true,
 		}),
 	},
 	fxState: {

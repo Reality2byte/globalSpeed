@@ -455,6 +455,10 @@ export type Gsm = {
 		alwaysOnTooltip: string
 		/** Mute tab */
 		muteTab: string
+		/** Select media */
+		selectMedia: string
+		/** Choose which video or audio your media shortcuts control. */
+		selectMediaTooltip: string
 	}
 	options: {
 		flags: {
@@ -561,10 +565,6 @@ export type Gsm = {
 				/** Skip backward */
 				skipBackward: string
 			}
-			/** Scan to use on... */
-			qrCodeTop: string
-			/** Edge for Mobile */
-			qrCodeBottom: string
 			/** Press and hold to fast forward */
 			holdToSpeedUp: string
 			/** Press and hold videos to temporarily speed up */
@@ -770,5 +770,15 @@ export type Gsm = {
 		resetAction: string
 		/** As a last resort, reinstall the extension. */
 		reinstallInstruction: string
+	}
+	mediaPicker: {
+		/** Automatic */
+		automatic: string
+		/** Loading media… */
+		loading: string
+		/** No media available */
+		empty: string
+		/** Could not update media. Close and try again. */
+		failed: string
 	}
 }

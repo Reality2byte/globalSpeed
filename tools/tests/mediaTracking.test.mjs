@@ -231,11 +231,11 @@ function watcherEnv() {
 		removeListener: (cb) => listeners.delete(cb),
 	}
 	const { SubscribeMedia } = load(
-		"src/hooks/useMediaWatch.ts",
+		"src/utils/SubscribeMedia.ts",
 		{
 			"@/globalVar": { gvar: {} },
 			"@/utils/browserUtils": { checkContentScript: () => ping.promise, frameExists: async () => false },
-			"../contentScript/isolated/utils/genMediaInfo": { flattenMediaInfos },
+			"@/contentScript/isolated/utils/genMediaInfo": { flattenMediaInfos },
 		},
 		{ chrome: env.chrome },
 	)
@@ -516,4 +516,15 @@ test("MediaTower streams time without extra storage writes and stops after the l
 		tower.sendTimeUpdateDeb.cancel()
 		tower.sendUpdateDeb.cancel()
 	}
+})
+
+test("prioritizing remote media overrides the current tab, and clearing restores automatic selection", async () => {
+	const env = browserEnv()
+	const remoteTab = { tabId: 2, frameId: 0 }
+	env.data["m:scope:2:0"] = { ...scope("remote"), tabInfo: remoteTab }
+	env.data["m:pin"] = { key: "remote", tabInfo: remoteTab }
+	const select = autoMedia(env)
+	assert.equal((await select(tabInfo)).key, "remote")
+	env.data["m:pin"] = null
+	assert.equal((await select(tabInfo)).key, "video")
 })

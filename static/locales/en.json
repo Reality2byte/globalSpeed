@@ -455,7 +455,11 @@
 		"alwaysOnTooltip": "Allow the shortcut to enable the extension even if it was disabled from the menu",
 		"!alwaysOnTooltip": "Tooltip explaining that a shortcut may enable the extension when it is off",
 		"muteTab": "Mute tab",
-		"!muteTab": "Command name shown in the shortcut editor and related command controls"
+		"!muteTab": "Command name shown in the shortcut editor and related command controls",
+		"selectMedia": "Select media",
+		"!selectMedia": "Shortcut command that opens a keyboard picker for prioritizing a media element",
+		"selectMediaTooltip": "Choose which video or audio your media shortcuts control.",
+		"!selectMediaTooltip": "Tooltip for the Select media shortcut command, which opens an on-page picker to prioritize one media element for subsequent media shortcuts"
 	},
 	"options": {
 		"flags": {
@@ -562,10 +566,6 @@
 				"skipBackward": "Skip backward",
 				"!skipBackward": "Circle-widget press-action option that seeks backward"
 			},
-			"qrCodeTop": "Scan to use on...",
-			"!qrCodeTop": "First line of the popup QR-code promotion for the mobile browser version",
-			"qrCodeBottom": "Edge for Mobile",
-			"!qrCodeBottom": "Product name shown below the popup QR code",
 			"holdToSpeedUp": "Press and hold to fast forward",
 			"!holdToSpeedUp": "Setting label for temporarily speeding up a video by pressing and holding it",
 			"holdToSpeedUpTooltip": "Press and hold videos to temporarily speed up",
@@ -771,5 +771,15 @@
 		"!resetAction": "Button that clears all extension settings and restores their defaults",
 		"reinstallInstruction": "As a last resort, reinstall the extension.",
 		"!reinstallInstruction": "Final recovery step shown when refreshing and resetting do not fix a crashed extension UI"
+	},
+	"mediaPicker": {
+		"automatic": "Automatic",
+		"!automatic": "Picker option that clears the selected media override and restores automatic selection",
+		"loading": "Loading media…",
+		"!loading": "Status while the media picker retrieves the media list",
+		"empty": "No media available",
+		"!empty": "Status when no eligible media appears in the picker",
+		"failed": "Could not update media. Close and try again.",
+		"!failed": "Status when the media picker cannot load media or save the selection"
 	}
 }

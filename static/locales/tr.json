@@ -236,7 +236,9 @@
 		"toggleSpeedTooltip": "Kısayol hızı ve son hız arasında geçiş yapın",
 		"alwaysOn": "Her zaman açık",
 		"alwaysOnTooltip": "Kısayolun, menüden devre dışı bırakılmış olsa bile uzantıyı etkinleştirmesine izin ver",
-		"muteTab": "Sekmeyi sessize al"
+		"muteTab": "Sekmeyi sessize al",
+		"selectMedia": "Medya seç",
+		"selectMediaTooltip": "Medya kısayollarınızın hangi video veya sesi kontrol edeceğini seçin."
 	},
 	"options": {
 		"flags": {
@@ -293,8 +295,6 @@
 				"skipForward": "İleri sar",
 				"skipBackward": "Geri sar"
 			},
-			"qrCodeTop": "Kullanmak için tarayın...",
-			"qrCodeBottom": "Mobil için Edge",
 			"holdToSpeedUp": "Hızlandırmak için basılı tutun",
 			"holdToSpeedUpTooltip": "Videoları geçici olarak hızlandırmak için basılı tutun",
 			"longPressThreshold": "Uzun basma süresi",
@@ -408,5 +408,11 @@
 		"resetInstruction": "Sorun devam ederse tüm uzantı ayarlarını varsayılan değerlerine sıfırlayın.",
 		"resetAction": "Ayarları sıfırla",
 		"reinstallInstruction": "Son çare olarak uzantıyı yeniden yükleyin."
+	},
+	"mediaPicker": {
+		"automatic": "Otomatik",
+		"loading": "Medya yükleniyor…",
+		"empty": "Kullanılabilir medya yok",
+		"failed": "Medya güncellenemedi. Kapatıp tekrar deneyin."
 	}
 }

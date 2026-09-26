@@ -242,6 +242,10 @@ const commandHandlers: {
 			icons: ["power"],
 		})
 	},
+	selectMedia: async ({ tabInfo }) => {
+		if (!tabInfo?.tabId) return
+		await chrome.scripting.executeScript({ target: { tabId: tabInfo.tabId, frameIds: [0] }, files: ["mediaPicker.js"] })
+	},
 	pin: async (args) => {
 		const { kb, tabInfo, override, show, fetch } = args
 		if (!tabInfo) return

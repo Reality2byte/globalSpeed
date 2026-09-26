@@ -1,5 +1,6 @@
 import { gvar } from "@/globalVar"
 import "./utils/session"
+import "./utils/mediaPicker"
 import "./utils/state"
 import "./badge"
 import "./rules"
