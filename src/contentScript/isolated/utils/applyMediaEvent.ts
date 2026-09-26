@@ -94,6 +94,9 @@ export function setMute(elem: HTMLMediaElement, state: StateOption) {
 
 export function setVolume(elem: HTMLMediaElement, value: number, relative: boolean) {
 	elem.volume = clamp(0, 1, relative ? elem.volume + value : value)
+	if (elem.volume > 0 && elem.muted) {
+		elem.muted = false
+	}
 }
 
 export function setMark(elem: HTMLMediaElement, key: string) {

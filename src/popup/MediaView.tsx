@@ -151,7 +151,6 @@ export function MediaView(props: {
 							)}
 						</Button>
 						<SliderInput
-							variant="seek"
 							className="min-w-0"
 							style={{ "--slider-progress": `${displayedVolume * 100}%` } as CSSProperties}
 							onChange={(e) => {

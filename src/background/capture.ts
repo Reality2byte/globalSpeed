@@ -3,7 +3,11 @@ import { gvar } from "@/globalVar"
 import { AnyDict, AUDIO_CONTEXT_KEYS } from "@/types"
 import { fetchView } from "@/utils/state"
 
-async function handleChange(changes: chrome.storage.StorageChanges) {
+let pendingChanges: chrome.storage.StorageChanges = {}
+
+async function handleChange() {
+	const changes = pendingChanges
+	pendingChanges = {}
 	let raw = await gvar.es.getAllUnsafe()
 	if (raw["g:superDisable"]) {
 		chrome.runtime.sendMessage({ type: "OFFSCREEN_PUSH", superDisable: true })
@@ -41,4 +45,11 @@ function checkTabsToPush(changes: chrome.storage.StorageChanges, raw: AnyDict, c
 
 const handleChangeDeb = debounce(handleChange, 500, { maxWait: 500, leading: true, trailing: true })
 
-chrome.tabCapture && chrome.offscreen && gvar.es.addWatcher([], handleChangeDeb)
+chrome.tabCapture &&
+	chrome.offscreen &&
+	gvar.es.addWatcher([], (changes) => {
+		// Keep every changed key until the next push. A later changeId-only event
+		// must not replace a slider update or another tab's pending audio changes.
+		Object.assign(pendingChanges, changes)
+		return handleChangeDeb()
+	})
