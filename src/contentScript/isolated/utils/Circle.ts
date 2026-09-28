@@ -227,6 +227,7 @@ export class Circle extends Popover {
 
 		if (!this.movingMode && !this.leftCircle) this.doMain()
 		this.clearSession()
+		gvar.os.mediaTower.refreshCircleTarget()
 	}
 	handlePointerMove = async (e: PointerEvent | TouchEvent) => {
 		this.autoHide && this.startShowTimeout()

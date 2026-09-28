@@ -7,6 +7,8 @@ import { formatDuration } from "@/utils/helper"
 import { getLeaf, insertStyle } from "@/utils/nativeUtils"
 import styles from "./styles.css?inline"
 
+const SHOW_MORE = "__gs_show_more__"
+
 declare global {
 	interface GlobalVar {
 		openingMediaPicker?: boolean
@@ -22,6 +24,16 @@ export class MediaPicker extends Popover {
 	private data?: MediaData
 	private focusedKey: string = null
 	private saving = false
+	private expanded = false
+	private get infos() {
+		return [...(this.data?.infos ?? []), ...(this.expanded ? (this.data?.remainingInfos ?? []) : [])]
+	}
+	private get hasMore() {
+		return !this.expanded && !!this.data?.remainingInfos?.length
+	}
+	private get optionKeys() {
+		return [null, ...this.infos.map((info) => info.key), ...(this.hasMore ? [SHOW_MORE] : [])]
+	}
 
 	constructor() {
 		super()
@@ -53,24 +65,29 @@ export class MediaPicker extends Popover {
 		if (this.released) return
 		if (!this.data) this.focusedKey = data.pinned?.key ?? null
 		this.data = data
-		if (!data.infos.some((info) => info.key === this.focusedKey)) this.focusedKey = null
-		this.status.textContent = data.infos.length ? "" : gvar.gsm.mediaPicker.empty
+		if (!this.optionKeys.includes(this.focusedKey)) this.focusedKey = null
+		this.status.textContent = ""
 		this.render()
 	}
 
 	private render = () => {
 		this.list.replaceChildren()
-		const options = [null, ...(this.data?.infos ?? [])]
-		options.forEach((info, index) => {
+		const infos = this.infos
+		this.optionKeys.forEach((key, index) => {
+			const info = infos.find((info) => info.key === key)
 			const row = document.createElement("div")
 			row.id = `media-option-${index}`
 			row.setAttribute("role", "option")
-			const key = info?.key ?? null
 			row.dataset.key = key ?? ""
 			row.className = "option"
 			const label = document.createElement("div")
 			label.className = "title"
-			label.textContent = info ? info.displayTitle || info.title || info.displayDomain || info.domain : gvar.gsm.mediaPicker.automatic
+			label.textContent =
+				key === SHOW_MORE
+					? gvar.gsm.token.showMore
+					: info
+						? info.displayTitle || info.title || info.displayDomain || info.domain
+						: gvar.gsm.mediaPicker.automatic
 			row.append(label)
 			if (info) {
 				const detail = document.createElement("div")
@@ -108,12 +125,12 @@ export class MediaPicker extends Popover {
 		if (event.key === "Escape") {
 			this.release()
 		} else if (event.key === "ArrowDown" || event.key === "ArrowUp" || event.key === "Tab") {
-			const keys = [null, ...(this.data?.infos.map((info) => info.key) ?? [])]
+			const keys = this.optionKeys
 			const direction = event.key === "ArrowUp" || (event.key === "Tab" && event.shiftKey) ? -1 : 1
 			this.focusedKey = keys[(keys.indexOf(this.focusedKey) + direction + keys.length) % keys.length]
 			this.syncSelection(true)
 		} else if (event.key === "Home" || event.key === "End") {
-			this.focusedKey = event.key === "Home" ? null : (this.data?.infos.at(-1)?.key ?? null)
+			this.focusedKey = event.key === "Home" ? null : this.optionKeys.at(-1)
 			this.syncSelection(true)
 		} else if (event.key === "Enter") {
 			void this.commit()
@@ -125,7 +142,13 @@ export class MediaPicker extends Popover {
 
 	private commit = async () => {
 		if (this.saving) return
-		const info = this.data?.infos.find((info) => info.key === this.focusedKey)
+		if (this.focusedKey === SHOW_MORE) {
+			this.expanded = true
+			this.focusedKey = this.data?.remainingInfos?.[0]?.key ?? null
+			this.render()
+			return
+		}
+		const info = this.infos.find((info) => info.key === this.focusedKey)
 		this.saving = true
 		try {
 			await setSession({ "m:pin": info ? { key: info.key, tabInfo: info.tabInfo } : null })

@@ -7,13 +7,17 @@ chrome.runtime.onConnect.addListener((port) => {
 	let client: SubscribeMedia
 	port.onMessage.addListener(() => {
 		if (client) return
-		client = new SubscribeMedia(port.sender.tab.id, (data) => {
-			try {
-				port.postMessage(data)
-			} catch {
-				client?.release()
-			}
-		})
+		client = new SubscribeMedia(
+			port.sender.tab.id,
+			(data) => {
+				try {
+					port.postMessage(data)
+				} catch {
+					client?.release()
+				}
+			},
+			true,
+		)
 	})
 	port.onDisconnect.addListener(() => client?.release())
 })

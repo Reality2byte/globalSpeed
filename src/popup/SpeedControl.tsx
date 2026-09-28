@@ -124,6 +124,7 @@ export function SpeedControl(props: SpeedControlProps) {
 						/>
 					</Tooltip>
 					<SliderInput
+						variant="seekFill"
 						step={0.01}
 						min={speedSliderMin}
 						max={speedSliderMax}

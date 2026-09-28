@@ -138,6 +138,6 @@ export type MediaPath = {
 	tabInfo: TabInfo
 }
 
-export type MediaData = { infos: FlatMediaInfo[]; pinned: MediaPath }
+export type MediaData = { infos: FlatMediaInfo[]; pinned: MediaPath; remainingInfos?: FlatMediaInfo[] }
 
 export type MediaDataWithScopes = { scopes: MediaScope[]; pinned: MediaPath }

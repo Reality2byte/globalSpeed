@@ -528,3 +528,128 @@ test("prioritizing remote media overrides the current tab, and clearing restores
 	env.data["m:pin"] = null
 	assert.equal((await select(tabInfo)).key, "video")
 })
+
+function circleEnv() {
+	class Media {
+		paused = true
+		ended = false
+		duration = 300
+		isConnected = true
+		intersectionRatio = 1
+		addEventListener() {}
+		getRootNode() {
+			return {}
+		}
+	}
+	class Video extends Media {}
+	const circle = {
+		video: undefined,
+		downAt: undefined,
+		start(video) {
+			this.video = video
+		},
+		stop() {
+			this.video = undefined
+		},
+	}
+	const gvar = { os: { circle, stratumServer: { wiggleCbs: new Set() }, detectOpen: { cbs: new Set() } } }
+	const { MediaTower } = load(
+		"src/contentScript/isolated/MediaTower.ts",
+		{
+			"lodash.debounce": (cb) => cb,
+			"@/globalVar": { gvar },
+			"@/utils/IterableWeakSet": { IterableWeakSet: Set },
+			"@/utils/nativeUtils": {},
+			"../../utils/configUtils": {},
+			"../../utils/helper": { assertType() {}, randomId: () => "video" },
+			"./utils/applyMediaEvent": { resetRateLimit() {} },
+			"./utils/genMediaInfo": {},
+		},
+		{
+			window: { addEventListener() {} },
+			HTMLMediaElement: Media,
+			HTMLVideoElement: Video,
+			ShadowRoot: class {},
+			chrome: { runtime: { id: "extension", onConnect: { addListener() {} } } },
+		},
+	)
+	const tower = new MediaTower()
+	tower.trackFps = false
+	tower.observer = { observe() {}, unobserve() {} }
+	const upper = new Video(),
+		lower = new Video()
+	tower.processMedia(upper)
+	tower.processMedia(lower)
+	const emit = (video, type) => {
+		if (type === "play") video.paused = false
+		if (type === "pause") video.paused = true
+		const event = { target: video, type, isTrusted: true }
+		if (type === "timeupdate") tower.handleMediaEventTimeUpdate(event)
+		else if (type === "playing") tower.handleInterrupt(event)
+		else if (type === "durationchange") tower.handleProgressEvent(event)
+		else tower.handleMediaEvent(event)
+	}
+	const observe = () => tower.handleObservation([upper, lower].map((target) => ({ target, intersectionRatio: target.intersectionRatio })))
+	return { tower, circle, upper, lower, emit, observe, Video }
+}
+
+test("circle follows the last playback start and stays on it through pauses and concurrent timeupdates", () => {
+	const { circle, upper, lower, emit, observe } = circleEnv()
+	emit(upper, "play")
+	emit(lower, "play")
+	assert.equal(circle.video, lower, "lower playback must supersede earlier discovery of the upper video")
+	emit(upper, "timeupdate")
+	emit(lower, "pause")
+	emit(upper, "timeupdate")
+	emit(upper, "playing") // Buffering recovery is not a new playback choice.
+	observe()
+	assert.equal(circle.video, lower, "pausing through either widget or site controls keeps the target")
+	emit(upper, "pause")
+	observe()
+	assert.equal(circle.video, lower, "pausing another video must not promote it")
+	emit(upper, "play")
+	assert.equal(circle.video, upper)
+})
+
+test("circle filters visibility before recency and retains a visible paused fallback", () => {
+	const { circle, upper, lower, emit, observe } = circleEnv()
+	emit(lower, "play")
+	lower.intersectionRatio = 0.5
+	observe()
+	assert.equal(circle.video, upper)
+	assert.ok(upper.paused)
+	lower.intersectionRatio = 0.6
+	observe()
+	assert.equal(circle.video, lower)
+	lower.isConnected = false
+	observe()
+	assert.equal(circle.video, upper)
+	upper.duration = 5
+	emit(upper, "durationchange")
+	assert.equal(circle.video, undefined)
+})
+
+test("circle defers target changes while a gesture is held and reevaluates after release", () => {
+	const { tower, circle, upper, lower, emit, observe } = circleEnv()
+	emit(lower, "play")
+	circle.downAt = 1
+	emit(upper, "play")
+	lower.intersectionRatio = 0
+	observe()
+	assert.equal(circle.video, lower)
+	delete circle.downAt
+	tower.refreshCircleTarget()
+	assert.equal(circle.video, upper)
+})
+
+test("circle recognizes media discovered during playback without relying on pause events", () => {
+	const { tower, circle, upper, Video } = circleEnv()
+	const playing = new Video()
+	playing.paused = false
+	tower.processMedia(playing)
+	assert.equal(circle.video, playing)
+	playing.paused = true
+	tower.refreshCircleTarget()
+	assert.equal(circle.video, playing)
+	assert.notEqual(circle.video, upper)
+})

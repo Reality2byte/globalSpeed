@@ -18,6 +18,10 @@ export class MediaTower {
 	forceSpeedCallbacks: Set<() => void> = new Set()
 	observer: IntersectionObserver
 	trackFps = true
+	// Playback starts, not timeupdates or pauses: concurrent players must not
+	// steal the circle from each other on every tick or when one is paused.
+	private circlePlayOrder = new WeakMap<HTMLMediaElement, number>()
+	private circlePlayCounter = 0
 	previousTimeUpdate: TimeUpdateInfo
 	private progressPorts = new Set<chrome.runtime.Port>()
 
@@ -76,6 +80,7 @@ export class MediaTower {
 		e.processed = true
 		this.processMedia(e.target)
 		if (this.progressPorts.size) this.sendProgressDeb()
+		this.refreshCircleTarget()
 	}
 	private handleDetectOpen = () => {
 		this.observer?.disconnect()
@@ -121,17 +126,26 @@ export class MediaTower {
 		})
 		this.sendUpdateDeb()
 
-		if (gvar.os.circle) this.processEntriesForCircle()
+		this.refreshCircleTarget()
 	}
-	private processEntriesForCircle = () => {
-		const activeVideo = [...this.media].find((m) => {
-			return m.duration > 10 && m.isConnected && m instanceof HTMLVideoElement && m.intersectionRatio > 0.5
-		}) as HTMLVideoElement
+	refreshCircleTarget = () => {
+		const circle = gvar.os.circle
+		if (!circle || circle.downAt) return
+		let activeVideo: HTMLVideoElement
+		let latestPlay = -1
+		for (const media of this.media) {
+			if (!(media instanceof HTMLVideoElement) || !media.isConnected || !(media.duration > 10) || !(media.intersectionRatio > 0.5)) continue
+			const order = this.circlePlayOrder.get(media) ?? 0
+			if (order > latestPlay || (order === latestPlay && media === circle.video)) {
+				activeVideo = media
+				latestPlay = order
+			}
+		}
 
 		if (activeVideo) {
-			gvar.os.circle.start(activeVideo)
+			circle.start(activeVideo)
 		} else {
-			gvar.os.circle.stop()
+			circle.stop()
 		}
 	}
 	private handleWiggle = (parent: Node & ParentNode) => {
@@ -149,6 +163,8 @@ export class MediaTower {
 	}
 	private processMedia = (elem: HTMLMediaElement) => {
 		if (this.media.has(elem)) return
+		// Handle media first discovered after playback has already started.
+		if (!elem.paused && !elem.ended && !this.circlePlayOrder.has(elem)) this.circlePlayOrder.set(elem, ++this.circlePlayCounter)
 		elem.gsKey = elem.gsKey || randomId()
 		const rootNode = elem?.getRootNode()
 		rootNode instanceof ShadowRoot && this.processDoc(rootNode)
@@ -160,6 +176,7 @@ export class MediaTower {
 		if (this.progressPorts.size) this.sendProgressDeb()
 
 		this.forceSpeedCallbacks.forEach((cb) => cb())
+		this.refreshCircleTarget()
 	}
 	private ensureDocEventListeners = (doc: Window | ShadowRoot) => {
 		for (const event of ["seeking", "seeked", "durationchange", "ended"]) {
@@ -236,6 +253,7 @@ export class MediaTower {
 		if (!elem || !(elem instanceof HTMLMediaElement)) return
 
 		if (EVENTS_LAST_PLAYED.has(e.type)) elem.gsLastPlayed = Date.now()
+		if (e.type === "play") this.circlePlayOrder.set(elem, ++this.circlePlayCounter)
 		this.processMedia(elem)
 		this.sendUpdate()
 		if (this.progressPorts.size) this.sendProgressDeb()
@@ -253,9 +271,10 @@ export class MediaTower {
 			this.handleInterrupt(e)
 		}
 
-		if (gvar.os.circle && (e.type === "playing" || e.type === "loadedmetadata") && elem instanceof HTMLVideoElement) {
+		if (gvar.os.circle && (e.type === "play" || e.type === "loadedmetadata") && elem instanceof HTMLVideoElement) {
 			this.reobserve(elem)
 		}
+		this.refreshCircleTarget()
 	}
 	sendUpdate = () => {
 		if (!chrome.runtime?.id) return gvar.os.handleOrphan()

@@ -2,6 +2,7 @@ import { flattenMediaInfos, MediaData, MediaPath, MediaScope } from "@/contentSc
 import { checkContentScript, frameExists } from "@/utils/browserUtils"
 
 const MINIMUM_DURATION = 10
+const REMAINING_MINIMUM_DURATION = 60
 
 type SubscribeMediaCallback = (infos: MediaData) => void
 
@@ -18,6 +19,7 @@ export class SubscribeMedia {
 	constructor(
 		private tabId: number,
 		cb: SubscribeMediaCallback,
+		private includeRemaining = false,
 	) {
 		cb && this.cbs.add(cb)
 		this.start()
@@ -94,8 +96,9 @@ export class SubscribeMedia {
 	calcLatest = () => {
 		const toShow = new Set<string>()
 		const pinnedKey = this.pinned?.key
-		const infos = flattenMediaInfos(Object.values(this.scopes) as MediaScope[])
-			.filter((info) => info.readyState && (info.key === pinnedKey || info.duration > MINIMUM_DURATION))
+		const readyInfos = flattenMediaInfos(Object.values(this.scopes) as MediaScope[]).filter((info) => info.readyState)
+		const infos = readyInfos
+			.filter((info) => info.key === pinnedKey || info.duration > MINIMUM_DURATION)
 			.sort((a, b) => {
 				if (a.tabInfo.tabId === this.tabId) return -Infinity
 				return a.tabInfo.tabId - b.tabInfo.tabId
@@ -155,6 +158,11 @@ export class SubscribeMedia {
 				.sort((a, b) => {
 					return Number(b.tabInfo.tabId === this.tabId || b.key === pinnedKey) - Number(a.tabInfo.tabId === this.tabId || b.key === pinnedKey)
 				}),
+		}
+		if (this.includeRemaining) {
+			this.latestData.remainingInfos = readyInfos
+				.filter((info) => !toShow.has(info.key) && info.duration > REMAINING_MINIMUM_DURATION)
+				.sort((a, b) => Number(!!b.infinity) - Number(!!a.infinity) || (b.duration || 0) - (a.duration || 0))
 		}
 	}
 }

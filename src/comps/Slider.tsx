@@ -4,16 +4,24 @@ import { useCallback, useEffect, useMemo, useState, type ComponentProps, type CS
 import { gvar } from "@/globalVar"
 import { clamp, cn, inverseLerp, lerp } from "../utils/helper"
 
-export const sliderVariants = cva("slider grayscale-75", {
+const seekBase = [
+	"h-[20px] [--slider-track-height:4px] [--slider-thumb-size:12px] [--slider-fill-color:var(--input)] [--slider-thumb-color:var(--muted-foreground)] focus:outline-none disabled:cursor-default disabled:opacity-40",
+	"[&::-webkit-slider-thumb]:border-0 [&::-webkit-slider-thumb]:shadow-[0_0_0_4px_var(--background)]",
+	"[&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:shadow-[0_0_0_4px_var(--background)]",
+	"[&:focus-visible::-webkit-slider-thumb]:shadow-[0_0_0_4px_var(--background)] [&:focus-visible::-moz-range-thumb]:shadow-[0_0_0_4px_var(--background)]",
+]
+
+export const sliderVariants = cva("slider", {
 	variants: {
 		variant: {
 			default: "",
 			seek: [
-				"h-[20px] [--slider-track-height:4px] [--slider-thumb-size:12px] [--slider-fill-color:var(--input)] [--slider-thumb-color:var(--muted-foreground)] focus:outline-none disabled:cursor-default disabled:opacity-40",
-				"[&::-webkit-slider-thumb]:w-[4px] [&::-webkit-slider-thumb]:rounded-[2px] [&::-webkit-slider-thumb]:border-0 [&::-webkit-slider-thumb]:shadow-[0_0_0_4px_var(--background)]",
-				"[&::-moz-range-thumb]:w-[4px] [&::-moz-range-thumb]:rounded-[2px] [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:shadow-[0_0_0_4px_var(--background)]",
-				"[&:focus-visible::-webkit-slider-thumb]:shadow-[0_0_0_4px_var(--background)] [&:focus-visible::-moz-range-thumb]:shadow-[0_0_0_4px_var(--background)]",
+				...seekBase,
+				"[&::-webkit-slider-thumb]:w-[4px] [&::-webkit-slider-thumb]:rounded-[2px]",
+				"[&::-moz-range-thumb]:w-[4px] [&::-moz-range-thumb]:rounded-[2px]",
 			],
+			seekRound: [seekBase, "[&::-webkit-slider-thumb]:opacity-75"],
+			seekFill: [seekBase, "[", "[--slider-fill-color:var(--primary)]"],
 		},
 		accent: {
 			true: "grayscale-0 [--slider-fill-color:var(--primary)] [--slider-thumb-color:var(--primary)]",

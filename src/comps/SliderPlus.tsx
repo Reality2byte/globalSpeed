@@ -33,6 +33,7 @@ export function SliderPlus(props: SliderPlusProps) {
 				{props.noReset ? <div /> : <Reset active={activated} onClick={() => handleValueChange(props.default)} />}
 			</div>
 			<Slider
+				variant="seekFill"
 				step={props.sliderStep ?? 0.01}
 				min={props.sliderMin}
 				max={props.sliderMax}
